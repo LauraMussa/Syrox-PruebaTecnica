@@ -1,0 +1,19 @@
+### Registrar Usuario
+POST http://localhost:3001/auth/register
+Content-Type: application/json
+
+{
+  "email": "nuevo4@gmail.com",
+  "password": "Password123!",
+  "repeatPassword": "Password123!"
+}
+
+
+### Loguear usuario
+POST http://localhost:3001/auth/login
+Content-Type: application/json
+
+{
+  "email": "nuevo4@gmail.com",
+  "password": "Password123!"
+}

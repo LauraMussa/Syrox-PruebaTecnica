@@ -1,0 +1,61 @@
+### Crear categoria
+POST http://localhost:3001/categories
+Content-Type: application/json
+
+{
+  "name": "Niños",
+  "position": 3
+}
+
+### Crear subcategoria
+POST http://localhost:3000/categories
+Content-Type: application/json
+
+{
+  "name": "Sandalias & Ojotas",
+  "position": 3,
+  "parentId": "ee125387-9990-46c7-955e-53cca75a0232"
+}
+
+###Obtiene categorias padre para filtro
+GET http://localhost:3000/categories/tree
+Content-Type: application/json
+
+###Obtiene categorias
+GET http://localhost:3000/categories
+Content-Type: application/json
+
+###Obtiene una categoria
+GET http://localhost:3000/categories/20b7a421-3aed-417a-8867-5654e27e1ce9
+Content-Type: application/json
+
+###Eliminar una categoria
+DELETE http://localhost:3000/categories/5de0c4e7-2ac6-4f7a-90f4-148e2c70eb85?force=false
+
+### Actualizar solo nombre
+PATCH http://localhost:3000/categories/20b7a421-3aed-417a-8867-5654e27e1ce9
+Content-Type: application/json
+
+{
+  "name": "Running Pro"
+}
+
+### Mover a otro padre
+PATCH http://localhost:3000/categories/64a20991-9647-4abb-af25-89cbcbcaae02
+Content-Type: application/json
+
+{
+  "parentId": "d8bf784a-7a1c-4b8c-8ae5-c6782f815909" 
+}
+
+### Reordenar categorías drag and drop
+PUT http://localhost:3000/categories/reorder
+Content-Type: application/json
+
+{
+  "parentId": "9440cec6-ed04-4ddd-aad7-f88194e458df",
+  "categoryIds": [
+    "6343b22e-9a75-4bd7-9ba7-347b96715391", 
+    "90c866b3-3826-4be9-a904-0bba52de65fe"
+  ]
+}

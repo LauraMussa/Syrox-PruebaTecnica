@@ -1,0 +1,10 @@
+###
+POST http://localhost:3000/customers
+Content-Type: application/json
+
+{
+  "name": "Laura Mussa",
+  "email": "laura@gmail.com",
+  "address": "Calle 123, Mendoza",
+  "phone": "123456789"
+}

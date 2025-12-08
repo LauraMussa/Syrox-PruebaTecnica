@@ -1,0 +1,47 @@
+### Crear una venta
+POST http://localhost:3001/sales
+Content-Type: application/json
+# Authorization: Bearer token
+
+{
+  "customerId": "8016d285-468b-41c6-bc82-ae6411781f03",
+  "paymentStatus": "FAILED",
+  "paymentMethod": "DEBIT_CARD",
+  "status": "PENDING",
+  "items": [
+    {
+      "productId": "87a7adb6-abc0-4923-bcb9-2781d159fdf1",
+      "quantity": 2
+    },
+    {
+      "productId": "450422eb-42f2-4675-a2b5-c5e61df060f3",
+      "quantity": 1
+    }
+  ]
+}
+
+
+### Obtener todas las ventas
+GET http://localhost:3001/sales
+Content-Type: application/json
+
+
+### Obtener una sola venta
+GET http://localhost:3001/sales/c9c71ed0-6910-44f2-a5cf-08e2b4ee6f8d
+Content-Type: application/json
+
+
+### Modificar order status
+PATCH http://localhost:3001/sales/2bfdf7d6-aa54-4bd6-a721-88cb9e546901
+Content-Type: application/json
+
+{
+  "status": "DELIVERED"
+}
+
+
+# PENDING: 'PENDING',
+#   PREPARING: 'PREPARING',
+#   SHIPPED: 'SHIPPED',
+#   DELIVERED: 'DELIVERED',
+#   CANCELLED: 'CANCELLED'

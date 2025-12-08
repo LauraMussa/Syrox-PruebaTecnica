@@ -1,0 +1,67 @@
+### Crear Producto
+POST http://localhost:3001/products
+Content-Type: application/json
+
+{
+    "name": "Ojotas",
+  "description": "Sandalias de goma ultraligeras, resistentes al agua y fáciles de limpiar.",
+  "price": 35000,
+  "stock": 200,
+  "brand": "Crocs",
+  "gender": "Niños",
+  "isActive": true,
+  "categoryId": "e43b5b92-c672-4b9c-a787-108cfa58143f",
+  "images": [
+    "https://example.com/imagen1.jpg",
+    "https://example.com/imagen2.jpg"
+  ],
+  "options": {
+    "color": [
+      "Rojo",
+      "Azul",
+      "Negro"
+    ],
+    "talla": [
+      39,
+      40,
+      41,
+      42,
+      43
+    ]
+  }
+}
+
+
+###Obtiene todos los productos
+GET http://localhost:3001/products
+Content-Type: application/json
+
+
+###Obtiene un producto por id
+GET http://localhost:3001/products/5226b5ba-7890-4dbd-941b-c7006dfef8b2
+Content-Type: application/json
+
+
+###Obtiene los 5 productos mas vendidos 
+GET http://localhost:3001/products/top-selling
+Content-Type: application/json
+
+
+###Modifica un producto producto
+PATCH http://localhost:3001/products/b454c2ab-b047-4e2e-921e-611ccd6fdf39
+Content-Type: application/json
+
+{
+  "name": "Zapatillas Running",
+  "options": {
+    "talla": [
+      45,
+      48
+    ]
+  }
+}
+
+###Soft delete 
+DELETE http://localhost:3001/products/20888e24-7e99-44a5-9a23-4a248d5659d2
+Content-Type: application/json
+
