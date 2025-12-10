@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { AuthForm } from "@/components/AuthForm";
 import { registerService } from "@/services/auth.service";
 import { RegisterFormType } from "@/types/auth.types";

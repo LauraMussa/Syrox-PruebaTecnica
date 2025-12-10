@@ -5,7 +5,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { CircleAlert, Loader2 } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -14,28 +13,9 @@ import Link from "next/link";
 import { Checkbox } from "./ui/checkbox";
 import { PasswordInput } from "./ui/password-input";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { loginSchema, registerSchema } from "@/schemas/auth.schema";
 
-const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
-
-const loginSchema = z.object({
-  email: z.email({ message: "Email inválido" }),
-  password: z.string().min(1, { message: "Ingresa tu contraseña" }),
-});
-
-const registerSchema = loginSchema
-  .extend({
-    name: z.string().min(2, { message: "El nombre es obligatorio" }),
-
-    email: z.email({ message: "Email inválido" }),
-    password: z.string().regex(passwordRegex, {
-      message: "Debe tener 8 caracteres, mayúscula, minúscula, número y símbolo.",
-    }),
-    repeatPassword: z.string(),
-  })
-  .refine((data) => data.password === data.repeatPassword, {
-    message: "Las contraseñas no coinciden",
-    path: ["repeatPassword"],
-  });
 
 type FormData = z.infer<typeof registerSchema> | z.infer<typeof loginSchema>;
 
@@ -47,7 +27,7 @@ interface AuthFormProps {
 export function AuthForm({ type, onSubmit }: AuthFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [globalError, setGlobalError] = useState<string>("");
-
+  const router = useRouter();
   const schema = type === "login" ? loginSchema : registerSchema;
 
   const form = useForm<FormData>({
@@ -66,6 +46,7 @@ export function AuthForm({ type, onSubmit }: AuthFormProps) {
     try {
       await onSubmit(values);
       form.reset();
+      router.replace("/");
     } catch (error: any) {
       setGlobalError(error.message || "Algo salió mal");
     } finally {
@@ -154,17 +135,30 @@ export function AuthForm({ type, onSubmit }: AuthFormProps) {
               )}
 
               {type === "login" && (
-                <div className="flex items-center space-x-3 pt-2">
-                  <Checkbox id="remember" className="h-5 w-5 border-gray-300 rounded" />
-                  <label htmlFor="remember" className="text-sm font-medium text-gray-600">
-                    Mantener sesión iniciada
-                  </label>
-                </div>
+                <FormField
+                  control={form.control}
+                  name="remember" 
+                  render={({ field }) => (
+                    <FormItem className="flex justify-center flex-row items-start  space-y-0 rounded-md pt-2">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <div className="space-y-1 leading-none">
+                        <FormLabel className="text-sm font-medium text-gray-600 cursor-pointer">
+                          Mantener sesión iniciada
+                        </FormLabel>
+                      </div>
+                    </FormItem>
+                  )}
+                />
               )}
               {globalError !== "" && (
                 <span className="flex items-center gap-2 border border-red-500 bg-red-100 py-1 w-fit px-3 text-red-700 text-center m-auto rounded-md">
                   <p>{globalError}</p>
-                  <CircleAlert  />
+                  <CircleAlert />
                 </span>
               )}
 

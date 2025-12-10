@@ -1,4 +1,3 @@
-
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -10,7 +9,7 @@ export class DashboardService {
     const count = await this.prisma.product.count();
 
     const result = await this.prisma.$queryRaw<[{ totalValue: number }]>`
-      SELECT SUM(price * stock) as "totalValue" FROM "products" WHERE "isActive" = true
+      SELECT SUM(price * stock) as "totalValue" FROM "products" 
     `;
 
     const totalValue = result[0]?.totalValue ? Number(result[0].totalValue) : 0;
@@ -18,6 +17,19 @@ export class DashboardService {
     return {
       totalProducts: count,
       inventoryValue: totalValue,
+    };
+  }
+
+  async findAll() {
+    const products = await this.prisma.product.findMany({
+      orderBy: { createdAt: 'desc' },
+    });
+
+    const totalProducts = await this.prisma.product.count();
+
+    return {
+      data: products,
+    
     };
   }
 }

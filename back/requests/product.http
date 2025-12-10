@@ -3,14 +3,14 @@ POST http://localhost:3001/products
 Content-Type: application/json
 
 {
-    "name": "Ojotas",
+  "name": "Sandalias",
   "description": "Sandalias de goma ultraligeras, resistentes al agua y fáciles de limpiar.",
   "price": 35000,
   "stock": 200,
   "brand": "Crocs",
   "gender": "Niños",
   "isActive": true,
-  "categoryId": "e43b5b92-c672-4b9c-a787-108cfa58143f",
+  "categoryId": "1c6072b0-93af-486e-96ba-a3e4fb600384",
   "images": [
     "https://example.com/imagen1.jpg",
     "https://example.com/imagen2.jpg"
@@ -61,7 +61,7 @@ Content-Type: application/json
   }
 }
 
+
 ###Soft delete 
 DELETE http://localhost:3001/products/20888e24-7e99-44a5-9a23-4a248d5659d2
 Content-Type: application/json
-

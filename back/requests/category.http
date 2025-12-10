@@ -4,11 +4,11 @@ Content-Type: application/json
 
 {
   "name": "Niños",
-  "position": 3
+  "position": 1
 }
 
 ### Crear subcategoria
-POST http://localhost:3000/categories
+POST http://localhost:3001/categories
 Content-Type: application/json
 
 {
@@ -18,22 +18,22 @@ Content-Type: application/json
 }
 
 ###Obtiene categorias padre para filtro
-GET http://localhost:3000/categories/tree
+GET http://localhost:3001/categories/tree
 Content-Type: application/json
 
 ###Obtiene categorias
-GET http://localhost:3000/categories
+GET http://localhost:3001/categories
 Content-Type: application/json
 
 ###Obtiene una categoria
-GET http://localhost:3000/categories/20b7a421-3aed-417a-8867-5654e27e1ce9
+GET http://localhost:3001/categories/20b7a421-3aed-417a-8867-5654e27e1ce9
 Content-Type: application/json
 
 ###Eliminar una categoria
-DELETE http://localhost:3000/categories/5de0c4e7-2ac6-4f7a-90f4-148e2c70eb85?force=false
+DELETE http://localhost:3001/categories/5de0c4e7-2ac6-4f7a-90f4-148e2c70eb85?force=false
 
 ### Actualizar solo nombre
-PATCH http://localhost:3000/categories/20b7a421-3aed-417a-8867-5654e27e1ce9
+PATCH http://localhost:3001/categories/20b7a421-3aed-417a-8867-5654e27e1ce9
 Content-Type: application/json
 
 {
@@ -41,7 +41,7 @@ Content-Type: application/json
 }
 
 ### Mover a otro padre
-PATCH http://localhost:3000/categories/64a20991-9647-4abb-af25-89cbcbcaae02
+PATCH http://localhost:3001/categories/64a20991-9647-4abb-af25-89cbcbcaae02
 Content-Type: application/json
 
 {
@@ -49,7 +49,7 @@ Content-Type: application/json
 }
 
 ### Reordenar categorías drag and drop
-PUT http://localhost:3000/categories/reorder
+PUT http://localhost:3001/categories/reorder
 Content-Type: application/json
 
 {
