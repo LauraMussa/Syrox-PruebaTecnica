@@ -46,10 +46,7 @@ const initialState: SalesState = {
 const salesSlice = createSlice({
   name: "sales",
   initialState,
-  reducers: {
-    // Aquí agregaremos futuras acciones síncronas
-    // clearSales: (state) => { state.items = [] }
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       // Fetch Sales

@@ -37,10 +37,16 @@ export class CategoriesController {
     return this.categoriesService.findAllTree();
   }
 
+  @Get('parent')
+  findAllParent(){
+    return this.categoriesService.findAllParent();
+  }
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.categoriesService.findOne(id);
   }
+
+
 
   @Patch(':id')
   update(

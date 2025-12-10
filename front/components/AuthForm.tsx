@@ -147,7 +147,7 @@ export function AuthForm({ type, onSubmit }: AuthFormProps) {
                         />
                       </FormControl>
                       <div className="space-y-1 leading-none">
-                        <FormLabel className="text-sm font-medium text-gray-600 cursor-pointer">
+                        <FormLabel className="text-sm font-medium text-foreground/80 cursor-pointer">
                           Mantener sesión iniciada
                         </FormLabel>
                       </div>
@@ -163,7 +163,7 @@ export function AuthForm({ type, onSubmit }: AuthFormProps) {
               )}
 
               <Button
-                className="w-full cursor-pointer h-12 text-base bg-gray-600 hover:bg-gray-500 text-white mt-6 rounded-lg"
+                className="w-full cursor-pointer h-12 text-base bg-foreground/90 hover:bg-foreground text-background  shadow-md mt-6 rounded-lg"
                 type="submit"
                 disabled={isLoading}
               >

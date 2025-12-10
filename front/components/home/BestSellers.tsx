@@ -25,7 +25,7 @@ const BestSellers = () => {
     if (!bestSellers || bestSellers.length === 0) {
       dispatch(fetchBestSellers());
     }
-  }, [dispatch, bestSellers?.length]); // Optional chaining por seguridad
+  }, [dispatch, bestSellers?.length]); 
 
   const topProducts = Array.isArray(bestSellers) ? bestSellers.slice(0, 5) : [];
 

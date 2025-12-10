@@ -33,7 +33,7 @@ export function AppSidebar() {
     <Sidebar collapsible="icon">
       <SidebarHeader className=" dark:bg-background border-b h-16 flex items-center px-4 justify-center">
         <span className="font-bold  hidden md:text-lg ">Tennis Star</span>
-        <Image src={"/logo.svg"} width={100} height={100} alt="logo" className=""></Image>
+        <Image src={"/logo.svg"} width={90} height={90} alt="logo" className=""></Image>
       </SidebarHeader>
 
       <SidebarContent className="dark:bg-background">

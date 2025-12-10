@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus, Loader2, X } from "lucide-react";
-import { useAppDispatch } from "@/store/hooks";
-
+import { Plus, Loader2, X, Upload } from "lucide-react";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { toast } from "sonner";
 import { productSchema, ProductFormValues } from "@/schemas/product.schema"; // Importa tu esquema
 
 import { Button } from "@/components/ui/button";
@@ -24,12 +24,18 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { addProduct } from "@/store/products/productsSlice";
+import { ParentCategory } from "../types/category.types";
+import { fetchParentCategories } from "@/store/categories/categoriesSlice";
 
 export function AddProductModal() {
   const [open, setOpen] = useState(false);
   const dispatch = useAppDispatch();
+  const { parentCategories } = useAppSelector((state: any) => state.categories);
+  const [tempColor, setTempColor] = useState("");
+  const [tempSize, setTempSize] = useState("");
+  const [tempImage, setTempImage] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Hook Form
   const {
     register,
     handleSubmit,
@@ -47,31 +53,99 @@ export function AddProductModal() {
       description: "",
       brand: "",
       categoryId: "",
-      price: "",
+      price: 0,
+      images: [],
+      options: { color: [], talla: [] },
     },
   });
 
-  const onSubmit = async (data: ProductFormValues) => {
+  const currentImages = watch("images") || [];
+  const currentOptions = watch("options") || { color: [], talla: [] };
+
+  const handleAddColor = () => {
+    if (!tempColor) return;
+    const newColors = [...(currentOptions.color || []), tempColor];
+    setValue("options", { ...currentOptions, color: newColors });
+    setTempColor("");
+  };
+
+  const handleAddSize = () => {
+    if (!tempSize) return;
+    const newSizes = [...(currentOptions.talla || []), tempSize];
+    setValue("options", { ...currentOptions, talla: newSizes });
+    setTempSize("");
+  };
+
+  const handleAddImage = () => {
+    if (!tempImage) return;
+    const newImages = [...currentImages, tempImage];
+    setValue("images", newImages);
+    setTempImage("");
+  };
+
+  const removeColor = (idx: number) => {
+    const newColors = currentOptions.color?.filter((_, i) => i !== idx);
+    setValue("options", { ...currentOptions, color: newColors });
+  };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const loadingToast = toast.loading("Subiendo imagen...");
+
     try {
-      // Dispatch de la acción de Redux
-      // Nota: Aquí deberías transformar 'data' para que coincida con lo que espera el thunk si faltan campos
-      // Por ejemplo, options y images si no están en el formulario básico.
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", "syrox_tech"); // TU PRESET DE CLOUDINARY
+      formData.append("folder", "syroxtech/productos");
 
-      const payload = {
-        ...data,
-        images: [], // Array vacío por ahora si no hay upload
-        options: {}, // Objeto vacío por ahora
-      };
+      // 2. Petición a Cloudinary (O a tu endpoint que sube a Cloudinary)
+      const res = await fetch("https://api.cloudinary.com/v1_1/dvgnwrkvl/image/upload", {
+        method: "POST",
+        body: formData,
+      });
 
-      await dispatch(addProduct(payload as any)).unwrap(); // unwrap lanza error si falla el thunk
+      const data = await res.json();
 
-      setOpen(false);
-      reset(); // Limpia el formulario
-      // Aquí podrías mostrar un toast de éxito
+      if (data.secure_url) {
+        const currentImages = watch("images") || [];
+        setValue("images", [...currentImages, data.secure_url]);
+
+        toast.success("Imagen subida", { id: loadingToast });
+      } else {
+        throw new Error("No se recibió URL");
+      }
     } catch (error) {
-      console.error("Error al crear:", error);
-      // Aquí podrías mostrar un toast de error
+      console.error(error);
+      toast.error("Error al subir imagen", { id: loadingToast });
+    } finally {
+      if (fileInputRef.current) fileInputRef.current.value = "";
     }
+  };
+
+  useEffect(() => {
+    if (!parentCategories || parentCategories.length === 0) {
+      dispatch(fetchParentCategories());
+    }
+  }, [dispatch, parentCategories?.length]);
+
+  const onSubmit = async (data: ProductFormValues) => {
+    const payload = { ...data, images: [], options: {} };
+    const crearProductoPromise = dispatch(addProduct(payload as any)).unwrap();
+
+    toast.promise(crearProductoPromise, {
+      loading: "Creando producto...",
+      success: (data) => {
+        setOpen(false);
+        reset();
+        return `Producto "${payload.name}" creado con éxito!`;
+      },
+      error: (err) => {
+        console.error("Error al crear:", err);
+        return `Error al crear: ${err.message || "Intentalo de nuevo"}`;
+      },
+    });
   };
 
   return (
@@ -92,7 +166,6 @@ export function AddProductModal() {
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-4">
-          {/* Fila 1: Nombre y Marca */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="name">Nombre</Label>
@@ -112,7 +185,6 @@ export function AddProductModal() {
             </div>
           </div>
 
-          {/* Fila 2: Categoría y Género */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="category">Categoría</Label>
@@ -122,10 +194,9 @@ export function AddProductModal() {
                   <SelectValue placeholder="Seleccionar..." />
                 </SelectTrigger>
                 <SelectContent>
-                  {/* Aquí deberías iterar sobre tus categorías reales */}
-                  <SelectItem value="1c6072b0-93af-486e-96ba-a3e4fb600384">Zapatillas</SelectItem>
-                  <SelectItem value="cat-uuid-2">Accesorios</SelectItem>
-                  <SelectItem value="cat-uuid-3">Indumentaria</SelectItem>
+                  {parentCategories?.map((p: ParentCategory) => {
+                    return <SelectItem value={p.id}>{p.name}</SelectItem>;
+                  })}
                 </SelectContent>
               </Select>
               {errors.categoryId && <p className="text-xs text-destructive">{errors.categoryId.message}</p>}
@@ -147,7 +218,6 @@ export function AddProductModal() {
             </div>
           </div>
 
-          {/* Fila 3: Precio y Stock */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="price">Precio</Label>
@@ -158,7 +228,7 @@ export function AddProductModal() {
                   type="number"
                   className="pl-7 bg-background"
                   placeholder="0.00"
-                  {...register("price")}
+                  {...register("price", { valueAsNumber: true })}
                 />
               </div>
               {errors.price && <p className="text-xs text-destructive">{errors.price.message}</p>}
@@ -177,7 +247,100 @@ export function AddProductModal() {
             </div>
           </div>
 
-          {/* Descripción */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t pt-4">
+            {/* Colores */}
+            <div className="space-y-2">
+              <Label>Colores</Label>
+              <div className="flex gap-2">
+                <Input
+                  value={tempColor}
+                  onChange={(e) => setTempColor(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), handleAddColor())}
+                  placeholder="Escribí y enter..."
+                />
+                <Button type="button" onClick={handleAddColor} size="icon" variant="secondary">
+                  <Plus className="w-4 h-4" />
+                </Button>
+              </div>
+              {/* Lista de colores cargados en el form */}
+              <div className="flex flex-wrap gap-2 mt-2">
+                {currentOptions.color?.map((c: string, i: number) => (
+                  <div key={i} className="bg-muted px-2 py-1 rounded text-xs flex items-center gap-1">
+                    {c} <X className="w-3 h-3 cursor-pointer" onClick={() => removeColor(i)} />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Talles */}
+            <div className="space-y-2">
+              <Label>Talles</Label>
+              <div className="flex gap-2">
+                <Input
+                  value={tempSize}
+                  onChange={(e) => setTempSize(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), handleAddSize())}
+                  placeholder="Escribí y enter..."
+                />
+                <Button type="button" onClick={handleAddSize} size="icon" variant="secondary">
+                  <Plus className="w-4 h-4" />
+                </Button>
+              </div>
+              <div className="flex flex-wrap gap-2 mt-2">
+                {currentOptions.talla?.map((t: string | number, i: number) => (
+                  <div key={i} className="bg-muted px-2 py-1 rounded text-xs flex items-center gap-1">
+                    {t}
+                    {/* Acá podés hacer la función removeSize similar a removeColor */}
+                    <X
+                      className="w-3 h-3 cursor-pointer"
+                      onClick={() => {
+                        const newSizes = currentOptions.talla?.filter((_, idx) => idx !== i);
+                        setValue("options", { ...currentOptions, talla: newSizes });
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-2 border-t pt-4">
+            <Label>Imágenes</Label>
+
+            <input
+              type="file"
+              accept="image/*"
+              ref={fileInputRef}
+              onChange={handleFileUpload}
+              className="hidden"
+            />
+
+            <div className="flex flex-wrap gap-4">
+              <div
+                onClick={() => fileInputRef.current?.click()}
+                className="w-24 h-24 border-2 border-dashed border-muted-foreground/25 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:bg-muted/50 transition-colors"
+              >
+                <Upload className="h-6 w-6 text-muted-foreground" />
+                <span className="text-xs text-muted-foreground mt-1">Subir</span>
+              </div>
+              {watch("images")?.map((url, i) => (
+                <div key={i} className="relative w-24 h-24 border rounded-lg overflow-hidden group">
+                  <img src={url} alt="Producto" className="w-full h-full object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const newImgs = watch("images").filter((_, idx) => idx !== i);
+                      setValue("images", newImgs);
+                    }}
+                    className="absolute top-1 right-1 bg-black/60 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+
           <div className="space-y-2">
             <Label htmlFor="description">Descripción</Label>
             <Textarea
@@ -197,11 +360,21 @@ export function AddProductModal() {
                 Si está desactivado, no se mostrará en la tienda.
               </p>
             </div>
-            <Switch className="cursor-pointer" checked={watch("isActive")} onCheckedChange={(val) => setValue("isActive", val)} />
+            <Switch
+              className="cursor-pointer"
+              checked={watch("isActive")}
+              onCheckedChange={(val) => setValue("isActive", val)}
+            />
           </div>
 
           <DialogFooter className="gap-2 pt-4">
-            <Button type="button" variant="outline" onClick={() => setOpen(false)} disabled={isSubmitting} className="cursor-pointer">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setOpen(false)}
+              disabled={isSubmitting}
+              className="cursor-pointer"
+            >
               Cancelar
             </Button>
             <Button type="submit" disabled={isSubmitting} className="cursor-pointer">

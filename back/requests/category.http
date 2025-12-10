@@ -25,8 +25,14 @@ Content-Type: application/json
 GET http://localhost:3001/categories
 Content-Type: application/json
 
+
+###Obtiene categorias Padre
+GET http://localhost:3001/categories/parent
+Content-Type: application/json
+
+
 ###Obtiene una categoria
-GET http://localhost:3001/categories/20b7a421-3aed-417a-8867-5654e27e1ce9
+GET http://localhost:3001/categories/adb57164-7e12-423e-bbbd-1e79ceb1daed
 Content-Type: application/json
 
 ###Eliminar una categoria
