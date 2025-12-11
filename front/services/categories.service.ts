@@ -1,22 +1,120 @@
-import { ParentCategory } from "@/types/category.types";
+import {
+  Category,
+  ParentCategory,
+  CreateCategoryDto,
+  UpdateCategoryDto,
+  ReorderCategoryDto,
+  PaginatedCategoriesResponse,
+} from "@/types/category.types";
 
 const API_URL = process.env.NEXT_PUBLIC_API;
+
+// Helper para manejar errores de fetch
+const handleResponse = async (response: Response) => {
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || "Error en la petición");
+  }
+  return response.json();
+};
+
+
+export const getAllCategoriesPaginatedService = async (
+  page: number = 1, 
+  limit: number = 10
+): Promise<PaginatedCategoriesResponse> => {
+  try {
+    const response = await fetch(`${API_URL}/categories?page=${page}&limit=${limit}`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+    return await handleResponse(response);
+  } catch (error) {
+    console.error("Error getAllCategoriesPaginated:", error);
+    throw error;
+  }
+};
+
 export const getAllParentCategoriesService = async (): Promise<ParentCategory[]> => {
   try {
     const response = await fetch(`${API_URL}/categories/parent`, {
-      headers: {
-        "Content-Type": "application/json",
-      },
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
     });
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || "Error al obtener categorias padre");
-    }
-    const data = await response.json();
-    console.log("RESPUESTA DE CATEGORIAS PADRE", data);
-    return data;
+    return await handleResponse(response);
   } catch (error) {
-    console.log(error);
+    console.error("Error getAllParentCategories:", error);
+    throw error;
+  }
+};
+
+export const getCategoryTreeService = async (): Promise<Category[]> => {
+  try {
+    const response = await fetch(`${API_URL}/categories/tree`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+    return await handleResponse(response);
+  } catch (error) {
+    console.error("Error getCategoryTree:", error);
+    throw error;
+  }
+};
+
+export const addCategoryService = async (data: CreateCategoryDto): Promise<Category> => {
+  try {
+    const response = await fetch(`${API_URL}/categories`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    return await handleResponse(response);
+  } catch (error) {
+    console.error("Error addCategory:", error);
+    throw error;
+  }
+};
+
+export const updateCategoryService = async (id: string, data: UpdateCategoryDto): Promise<Category> => {
+  try {
+    const response = await fetch(`${API_URL}/categories/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    return await handleResponse(response);
+  } catch (error) {
+    console.error("Error updateCategory:", error);
+    throw error;
+  }
+};
+
+export const deleteCategoryService = async (id: string, force: boolean = false): Promise<void> => {
+  try {
+    const url = force ? `${API_URL}/categories/${id}?force=true` : `${API_URL}/categories/${id}`;
+
+    const response = await fetch(url, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+    });
+    return await handleResponse(response);
+  } catch (error) {
+    console.error("Error deleteCategory:", error);
+    throw error;
+  }
+};
+
+
+export const reorderCategoriesService = async (data: ReorderCategoryDto): Promise<void> => {
+  try {
+    const response = await fetch(`${API_URL}/categories/reorder`, {
+      method: "POST", // Verifica si en tu Controller es POST o PATCH
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    return await handleResponse(response);
+  } catch (error) {
+    console.error("Error reorderCategories:", error);
     throw error;
   }
 };

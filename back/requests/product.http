@@ -3,14 +3,14 @@ POST http://localhost:3001/products
 Content-Type: application/json
 
 {
-  "name": "Sandalias",
+  "name": "Sandalas",
   "description": "Sandalias de goma ultraligeras, resistentes al agua y fáciles de limpiar.",
   "price": 35000,
   "stock": 200,
   "brand": "Crocs",
   "gender": "Niños",
   "isActive": true,
-  "categoryId": "1c6072b0-93af-486e-96ba-a3e4fb600384",
+  "categoryId": "2a98f231-577a-4c73-8393-46eba1666b41",
   "images": [
     "https://example.com/imagen1.jpg",
     "https://example.com/imagen2.jpg"
@@ -38,7 +38,7 @@ Content-Type: application/json
 
 
 ###Obtiene un producto por id
-GET http://localhost:3001/products/5226b5ba-7890-4dbd-941b-c7006dfef8b2
+GET http://localhost:3001/products/4aeea243-7f9f-4c22-9584-e386fbd2471d
 Content-Type: application/json
 
 
@@ -48,7 +48,7 @@ Content-Type: application/json
 
 
 ###Modifica un producto producto
-PATCH http://localhost:3001/products/b454c2ab-b047-4e2e-921e-611ccd6fdf39
+PATCH http://localhost:3001/products/922759a1-78f1-4804-b529-52ae1ce4aeae
 Content-Type: application/json
 
 {
@@ -63,5 +63,5 @@ Content-Type: application/json
 
 
 ###Soft delete 
-DELETE http://localhost:3001/products/20888e24-7e99-44a5-9a23-4a248d5659d2
+DELETE http://localhost:3001/products/922759a1-78f1-4804-b529-52ae1ce4aeae
 Content-Type: application/json

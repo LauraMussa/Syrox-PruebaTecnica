@@ -10,6 +10,7 @@ import {
   DefaultValuePipe,
   ParseBoolPipe,
   Put,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -17,6 +18,7 @@ import {
   ReorderCategoriesDto,
   UpdateCategoryDto,
 } from './dto/update-category.dto';
+import { PaginationDto } from 'src/products/dto/pagination.dto';
 
 @Controller('categories')
 export class CategoriesController {
@@ -28,8 +30,8 @@ export class CategoriesController {
   }
 
   @Get()
-  findAll() {
-    return this.categoriesService.findAll();
+  findAll(@Query() paginationDto: PaginationDto) {
+    return this.categoriesService.findAll(paginationDto);
   }
 
   @Get('tree')
@@ -38,15 +40,13 @@ export class CategoriesController {
   }
 
   @Get('parent')
-  findAllParent(){
+  findAllParent() {
     return this.categoriesService.findAllParent();
   }
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.categoriesService.findOne(id);
   }
-
-
 
   @Patch(':id')
   update(

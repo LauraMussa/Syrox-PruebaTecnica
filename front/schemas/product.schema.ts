@@ -7,13 +7,12 @@ export const productSchema = z.object({
   stock: z.coerce.number().int().min(0, "El stock no puede ser negativo"),
   brand: z.string().min(1, "Marca requerida"),
   gender: z.enum(["Niños", "Hombre", "Mujer", "Unisex"]),
-  options: z
-    .object({
-      color: z.array(z.string()).min(1, "Al menos un color es requerido"),
-      talla: z.array(z.string().or(z.number())).min(1, "Al menos un talle es requerido"),
-    }),
+  options: z.object({
+    color: z.array(z.string()).min(1, "Al menos un color es requerido"),
+    talla: z.array(z.string().or(z.number())).optional(),
+  }),
   images: z.array(z.string()).min(1, "Al menos una imagen es requerida"),
   categoryId: z.string().min(1, "Categoría requerida"),
-  isActive: z.boolean().default(true), 
+  isActive: z.boolean().default(true),
 });
 export type ProductFormValues = z.infer<typeof productSchema>;

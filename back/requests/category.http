@@ -3,8 +3,8 @@ POST http://localhost:3001/categories
 Content-Type: application/json
 
 {
-  "name": "Niños",
-  "position": 1
+  "name": "Niñas",
+  "position": 10
 }
 
 ### Crear subcategoria

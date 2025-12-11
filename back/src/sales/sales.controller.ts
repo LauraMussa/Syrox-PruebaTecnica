@@ -6,10 +6,12 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { SalesService } from './sales.service';
-import { CreateSaleDto, OrderStatus } from './dto/create-sale.dto';
+import { CreateSaleDto } from './dto/create-sale.dto';
 import { UpdateSaleStatusDto } from './dto/update-sale.dto';
+import { PaginationDto } from 'src/products/dto/pagination.dto';
 
 @Controller('sales')
 export class SalesController {
@@ -21,8 +23,9 @@ export class SalesController {
   }
 
   @Get()
-  findAll() {
-    return this.salesService.findAll();
+  findAll(@Query() paginationDto?: PaginationDto) {
+    console.log("Pagination DTO recibido:", paginationDto);
+    return this.salesService.findAll(paginationDto);
   }
 
   @Get(':id')

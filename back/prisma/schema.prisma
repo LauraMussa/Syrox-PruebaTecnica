@@ -13,7 +13,7 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
-//se agrega comnetario
+
 enum OrderStatus {
   PENDING
   PREPARING
@@ -31,7 +31,7 @@ enum PaymentStatus {
 model User {
   id        String   @id @default(uuid())
   email     String   @unique
-  password  String 
+  password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   name      String
@@ -48,7 +48,7 @@ model Product {
   brand       String?
   gender      String?
   isActive    Boolean    @default(true)
-  // Para manejar talles, colores etc
+  isDeleted   Boolean    @default(false)
   options     Json?
   categoryId  String
   category    Category   @relation(fields: [categoryId], references: [id])
@@ -126,9 +126,9 @@ model SaleHistory {
   id        String      @id @default(uuid())
   saleId    String
   sale      Sale        @relation(fields: [saleId], references: [id])
-  status    OrderStatus // El estado al que cambió (ej: SHIPPED)
-  note      String? // "Pedido enviado con tracking..."
-  changedBy String? // "Armando admin" (opcional si no tienes auth compleja)
+  status    OrderStatus 
+  note      String? 
+  changedBy String? 
   createdAt DateTime    @default(now())
 
   @@map("sale_history")

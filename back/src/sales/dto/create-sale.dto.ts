@@ -48,12 +48,18 @@ export class CreateSaleDto {
   @IsString()
   @IsOptional()
   paymentMethod?: string;
-  
+
   @IsOptional()
   @IsEnum(OrderStatus)
-  status?: OrderStatus; 
+  status?: OrderStatus;
+
+  @IsOptional()
+  note?: string;
+
+  @IsOptional()
+  trackingId?: string;
 
   @IsOptional()
   @IsEnum(PaymentStatus)
-  paymentStatus?: PaymentStatus; 
+  paymentStatus?: PaymentStatus;
 }

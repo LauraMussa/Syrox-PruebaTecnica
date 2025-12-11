@@ -17,7 +17,7 @@ export class ProductsService {
     }
     return product;
   }
-  
+
   async create(dto: CreateProductDto) {
     const categoryExits = await this.prisma.category.findUnique({
       where: { id: dto.categoryId },
@@ -44,20 +44,25 @@ export class ProductsService {
 
     return this.prisma.product.create({
       data: dto,
+      include: { category: true },
     });
   }
 
   async findAll(paginationDto: PaginationDto) {
     const { page = 1, limit = 10 } = paginationDto;
     const skip = (page - 1) * limit;
-
+    const whereCondition = { isDeleted: false };
     const products = await this.prisma.product.findMany({
       skip: skip,
       take: limit,
+      where: whereCondition,
       orderBy: { createdAt: 'desc' },
+      include: { category: true },
     });
 
-    const totalProducts = await this.prisma.product.count();
+    const totalProducts = await this.prisma.product.count({
+      where: whereCondition,
+    });
 
     return {
       data: products,
@@ -70,7 +75,16 @@ export class ProductsService {
   }
 
   async findOne(productId: string) {
-    return await this.findProduct(productId);
+    const product = await this.prisma.product.findUnique({
+      where: { id: productId },
+    });
+    if (!product) {
+      throw new BadRequestException('No se encontró el producto');
+    }
+    return await this.prisma.product.findUnique({
+      where: { id: productId },
+      include: { category: true },
+    });
   }
 
   async update(productId: string, dto: UpdateProductDto) {
@@ -78,19 +92,29 @@ export class ProductsService {
     return await this.prisma.product.update({
       where: { id: productId },
       data: dto,
+      include: { category: true },
     });
   }
 
-  async remove(productId: string) {
-    await this.findProduct(productId);
-    return this.prisma.product.update({
-      where: { id: productId },
-      data: { isActive: false },
+  async remove(id: string) {
+    return await this.prisma.product.update({
+      where: { id },
+      data: {
+        isDeleted: true,
+        isActive: false,
+      },
+    });
+  }
+
+  async toggleActive(id: string) {
+    const product = await this.findProduct(id);
+    return await this.prisma.product.update({
+      where: { id },
+      data: { isActive: !product.isActive },
     });
   }
 
   async findTopSelling() {
-    // 1. Agrupar por productId en la tabla SaleItem y sumar cantidades
     const topSales = await this.prisma.saleItem.groupBy({
       by: ['productId'],
       _sum: {
@@ -98,14 +122,11 @@ export class ProductsService {
       },
       orderBy: {
         _sum: {
-          quantity: 'desc', // Los que más cantidad vendieron primero
+          quantity: 'desc',
         },
       },
-      take: 5, // Top 5
+      take: 5,
     });
-
-    // 2. Obtener los detalles de esos productos (Nombre, Precio, Foto)
-    // Porque el groupBy solo te devuelve { productId: "...", _sum: { quantity: 10 } }
 
     const productIds = topSales.map((item) => item.productId);
 
@@ -115,11 +136,10 @@ export class ProductsService {
         id: true,
         name: true,
         price: true,
-        images: true, 
+        images: true,
       },
     });
 
-    // 3. (Opcional) Combinar para devolver producto + cantidad vendida
     return topSales.map((salesStat) => {
       const productInfo = products.find((p) => p.id === salesStat.productId);
       return {

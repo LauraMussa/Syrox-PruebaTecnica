@@ -4,10 +4,9 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { fetchSales } from "@/store/sales/salesSlice";
 import { Sale } from "@/types/sale.types";
 import { useEffect } from "react";
-import { cn } from "@/lib/utils";
 import { History } from "lucide-react";
+import { LatestSalesSkeleton } from "../skeletons/home/LatestSalesSkeleton";
 
-// Helper para moneda (ARS)
 const formatCurrency = (value: number | string) => {
   const numberValue = typeof value === "string" ? parseFloat(value) : value;
   return new Intl.NumberFormat("es-AR", {
@@ -49,15 +48,16 @@ function ListItem({ customerName, orderNumber, status, amount, date }: any) {
 
 const LastestSales = () => {
   const dispatch = useAppDispatch();
-  const { items } = useAppSelector((state: any) => state.sales);
-  const sales = Array.isArray(items) ? items.slice(0, 4) : [];
-
+  const { items, loadingSales } = useAppSelector((state: any) => state.sales);
+  const sales = Array.isArray(items) ? items.slice(0, 5) : [];
+  const isLoading = loadingSales || (!items.length && loadingSales);
   useEffect(() => {
     if (items.length === 0) {
       dispatch(fetchSales());
     }
   }, [dispatch, items.length]);
 
+  if (isLoading) return <LatestSalesSkeleton />;
   return (
     <Card className="h-full border border-transparent shadow-sm bg-card overflow-hidden flex flex-col">
       <CardHeader className="pb-3 pt-4 px-4 flex flex-row ">

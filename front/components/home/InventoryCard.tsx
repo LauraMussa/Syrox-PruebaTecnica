@@ -1,18 +1,18 @@
 "use client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import {  Package, Plus } from "lucide-react";
+import { Package } from "lucide-react";
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { Product } from "@/types/product.types"; 
+import { Product } from "@/types/product.types";
 import Link from "next/link";
 import { fetchInventoryStats, fetchProducts } from "@/store/products/productsSlice";
-import { AddProductModal } from "../AddProductModal";
+import { ProductFormModal } from "../products/ProductFormModal";
+import { InventoryCardSkeleton } from "../skeletons/home/InventoryCardSkeleton";
 
 const InventoryCard = () => {
   const dispatch = useAppDispatch();
-  const { stats, items } = useAppSelector((state: any) => state.products);
-
+  const { stats, items, statsLoading, itemsLoading } = useAppSelector((state: any) => state.products);
+  const isLoading = statsLoading || itemsLoading || (!stats && !items.length);
   const products = Array.isArray(items) ? items.slice(0, 15) : [];
 
   useEffect(() => {
@@ -32,7 +32,7 @@ const InventoryCard = () => {
       maximumFractionDigits: 0,
     }).format(value);
   };
-
+  if (isLoading) return <InventoryCardSkeleton />;
   return (
     <Card className="h-full flex border border-transparent flex-col shadow-sm bg-card overflow-hidden">
       <CardHeader className="pb-3 pt-4 px-4 flex flex-row items-center justify-between ">
@@ -66,11 +66,8 @@ const InventoryCard = () => {
         </div>
 
         <div className="flex flex-wrap gap-5 sm:gap-2 mt-auto pt-2">
-         <AddProductModal />
-          {/* <Button className=" h-8 px-3 text-xs border-none cursor-pointer flex-1 sm:flex-none">
-            <Plus className=" h-2 w-2 " />
-            <p className="mt-[3px]">Añadir</p>
-          </Button> */}
+          <ProductFormModal />
+
           <Link
             href={"/products"}
             className="cursor-pointer border-none hover:bg-accent h-8 items-center justify-center flex p-4 py-4.2 bg-accent/70 rounded-sm text-xs ml-auto"

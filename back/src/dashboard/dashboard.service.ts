@@ -5,11 +5,15 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class DashboardService {
   constructor(private prisma: PrismaService) {}
 
-  async getInventoryStats() {
-    const count = await this.prisma.product.count();
+ async getInventoryStats() {
+    const count = await this.prisma.product.count({
+      where: { isDeleted: false } 
+    });
 
     const result = await this.prisma.$queryRaw<[{ totalValue: number }]>`
-      SELECT SUM(price * stock) as "totalValue" FROM "products" 
+      SELECT SUM(price * stock) as "totalValue" 
+      FROM "products" 
+      WHERE "isDeleted" = false  
     `;
 
     const totalValue = result[0]?.totalValue ? Number(result[0].totalValue) : 0;
@@ -23,13 +27,11 @@ export class DashboardService {
   async findAll() {
     const products = await this.prisma.product.findMany({
       orderBy: { createdAt: 'desc' },
+      where: { isDeleted: false },
     });
-
-    const totalProducts = await this.prisma.product.count();
 
     return {
       data: products,
-    
     };
   }
 }

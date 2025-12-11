@@ -6,11 +6,13 @@ import authReducer from "./auth/authSlice";
 import productsReducer from "./products/productsSlice";
 import salesReducer from "./sales/salesSlice";
 import categoriesReducer from "./categories/categoriesSlice";
+import customersReducer from "./customers/customerSlice";
 const rootReducer = combineReducers({
   auth: authReducer,
   products: productsReducer,
   sales: salesReducer,
   categories: categoriesReducer,
+  customers: customersReducer,
 });
 
 const persistConfig = {

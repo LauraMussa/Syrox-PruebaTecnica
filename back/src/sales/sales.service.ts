@@ -5,13 +5,13 @@ import {
 } from '@nestjs/common';
 import { CreateSaleDto, OrderStatus } from './dto/create-sale.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { PaginationDto } from 'src/products/dto/pagination.dto';
 
 @Injectable()
 export class SalesService {
   constructor(private prisma: PrismaService) {}
 
   async create(dto: CreateSaleDto) {
-    /// transaction para hacer todo o nada crea la venta y resta al stock
     return this.prisma.$transaction(async (tx) => {
       const customer = await tx.customer.findUnique({
         where: { id: dto.customerId },
@@ -75,6 +75,7 @@ export class SalesService {
           items: {
             create: itemsToCreate,
           },
+          note: dto.note,
         },
         include: {
           items: {
@@ -87,27 +88,52 @@ export class SalesService {
       return sale;
     });
   }
+  async findAll(paginationDto?: PaginationDto) {
+    const { page, limit } = paginationDto || {};
 
-  async findAll() {
-    return await this.prisma.sale.findMany({
-      include: {
-        items: {
-          select: {
-            id: true,
-            quantity: true,
-            price: true,
-            product: {
-              select: {
-                name: true,
-                description: true,
-                price: true,
-              },
+    const includeOptions = {
+      items: {
+        select: {
+          id: true,
+          quantity: true,
+          price: true,
+          product: {
+            select: {
+              name: true,
+              description: true,
+              price: true,
             },
           },
         },
-        customer: true,
       },
+      customer: true,
+    };
+
+    if (page && limit) {
+      const skip = (page - 1) * limit;
+      const totalSales = await this.prisma.sale.count();
+
+      const data = await this.prisma.sale.findMany({
+        skip,
+        take: limit,
+        include: includeOptions,
+        orderBy: { createdAt: 'desc' },
+      });
+
+      return {
+        data,
+        meta: {
+          totalSales,
+          page,
+          lastPage: Math.ceil(totalSales / limit),
+        },
+      };
+    }
+
+    return await this.prisma.sale.findMany({
+      include: includeOptions,
       orderBy: { createdAt: 'desc' },
+      take: 50,
     });
   }
 
@@ -135,7 +161,12 @@ export class SalesService {
     });
   }
 
-  async update(saleId: string, status: OrderStatus, trackingId?: string) {
+  async update(
+    saleId: string,
+    status: OrderStatus,
+    trackingId?: string,
+    note?: string,
+  ) {
     return (
       this,
       this.prisma.sale.update({
@@ -143,7 +174,9 @@ export class SalesService {
         data: {
           status: status,
           trackingId: trackingId,
+          note: note,
         },
+        include: { customer: true, items: true },
       })
     );
   }

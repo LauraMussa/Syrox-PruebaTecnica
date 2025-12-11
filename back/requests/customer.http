@@ -8,3 +8,8 @@ Content-Type: application/json
   "address": "Calle 123, Mendoza",
   "phone": "123456789"
 }
+
+###
+GET http://localhost:3001/customers
+Content-Type: application/json
+

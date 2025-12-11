@@ -4,9 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { fetchBestSellers } from "@/store/sales/salesSlice";
 import { BestSellerProduct } from "@/types/product.types";
-import { Package, Trophy } from "lucide-react"; // Iconos para decorar
+import { Package, Trophy } from "lucide-react";
+import { BestSellersSkeleton } from "../skeletons/home/BestSellersSkeleton";
 
-// Helper para moneda
 const formatCurrency = (value: string) => {
   return new Intl.NumberFormat("es-AR", {
     style: "currency",
@@ -18,19 +18,18 @@ const formatCurrency = (value: string) => {
 
 const BestSellers = () => {
   const dispatch = useAppDispatch();
-  const { bestSellers } = useAppSelector((state: any) => state.sales);
-
+  const { bestSellers, loadingBestSellers } = useAppSelector((state: any) => state.sales);
+  const isLoading = loadingBestSellers;
   useEffect(() => {
-    // Solo hacemos fetch si realmente está vacío
     if (!bestSellers || bestSellers.length === 0) {
       dispatch(fetchBestSellers());
     }
-  }, [dispatch, bestSellers?.length]); 
+  }, [dispatch, bestSellers?.length]);
 
   const topProducts = Array.isArray(bestSellers) ? bestSellers.slice(0, 5) : [];
 
+  if (isLoading) return <BestSellersSkeleton />;
   return (
-    // Igualamos estilos: border transparent, bg-card
     <Card className="h-full border border-transparent shadow-sm bg-card flex flex-col">
       <CardHeader className="pb-3 pt-4 px-4 flex flex-row ">
         <Trophy className="w-5 h-5 text-yellow-600 dark:text-yellow-200" />
@@ -43,7 +42,6 @@ const BestSellers = () => {
             key={product.id}
             className="flex items-center gap-3 p-2 rounded-lg hover:bg-accent/5 transition-colors border-b border-border last:border-0 last:pb-0"
           >
-            {/* 1. Imagen o Placeholder */}
             <div className="h-10 w-10 shrink-0 rounded-md bg-muted flex items-center justify-center overflow-hidden border border-border">
               {product.images && product.images.length > 0 ? (
                 <img src={product.images[0]} alt={product.name} className="h-full w-full object-cover" />
@@ -52,7 +50,6 @@ const BestSellers = () => {
               )}
             </div>
 
-            {/* 2. Info Principal */}
             <div className="flex-1 min-w-0">
               {" "}
               <p className="text-sm font-medium text-foreground truncate">{product.name}</p>

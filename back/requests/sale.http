@@ -4,17 +4,17 @@ Content-Type: application/json
 # Authorization: Bearer token
 
 {
-  "customerId": "8016d285-468b-41c6-bc82-ae6411781f03",
+  "customerId": "4b2fca4f-9541-42c9-b249-22e73512d027",
   "paymentStatus": "FAILED",
   "paymentMethod": "DEBIT_CARD",
   "status": "PENDING",
   "items": [
     {
-      "productId": "87a7adb6-abc0-4923-bcb9-2781d159fdf1",
+      "productId": "3187990d-5360-4f66-9159-8a426ecc757b",
       "quantity": 2
     },
     {
-      "productId": "450422eb-42f2-4675-a2b5-c5e61df060f3",
+      "productId": "dbacd5a8-061c-4bab-9592-2f5081cd53ba",
       "quantity": 1
     }
   ]
@@ -32,11 +32,12 @@ Content-Type: application/json
 
 
 ### Modificar order status
-PATCH http://localhost:3001/sales/2bfdf7d6-aa54-4bd6-a721-88cb9e546901
+PATCH http://localhost:3001/sales/08b44e48-19e0-4e80-a078-2217032cc6c7
 Content-Type: application/json
 
 {
-  "status": "DELIVERED"
+  "status": "DELIVERED",
+  "trackingId":""
 }
 
 

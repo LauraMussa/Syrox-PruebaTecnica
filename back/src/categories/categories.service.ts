@@ -5,6 +5,7 @@ import {
   UpdateCategoryDto,
 } from './dto/update-category.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { PaginationDto } from 'src/products/dto/pagination.dto';
 
 @Injectable()
 export class CategoriesService {
@@ -56,14 +57,31 @@ export class CategoriesService {
     });
   }
 
-  async findAll() {
-    return this.prisma.category.findMany({
+  async findAll(paginationDto: PaginationDto) {
+    const { page = 1, limit = 10 } = paginationDto;
+    const skip = (page - 1) * limit;
+
+    const totalCategories = await this.prisma.category.count();
+
+    const data = await this.prisma.category.findMany({
+      skip,
+      take: limit,
       include: {
         parent: true,
         children: true,
       },
       orderBy: { position: 'asc' },
     });
+    const lastPage = Math.ceil(totalCategories / limit);
+
+    return {
+      data,
+      meta: {
+        totalCategories,
+        page,
+        lastPage,
+      },
+    };
   }
 
   async findAllTree() {

@@ -1,5 +1,5 @@
 import { OrderStatus } from './create-sale.dto';
-import { IsEnum, IsNumber, IsString } from 'class-validator';
+import { IsEnum, IsString } from 'class-validator';
 
 export class UpdateSaleStatusDto {
   @IsEnum(OrderStatus)
@@ -7,4 +7,7 @@ export class UpdateSaleStatusDto {
 
   @IsString()
   trackingId?: string;
+
+  @IsString()
+  note?: string;
 }

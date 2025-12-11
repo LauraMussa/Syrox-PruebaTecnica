@@ -1,5 +1,10 @@
-
-import { BestSellerProduct, CreateProductInput, InventoryResponse, Product, ProductsResponse } from "@/types/product.types";
+import {
+  BestSellerProduct,
+  CreateProductInput,
+  InventoryResponse,
+  Product,
+  ProductsResponse,
+} from "@/types/product.types";
 
 const API_URL = process.env.NEXT_PUBLIC_API;
 
@@ -24,9 +29,9 @@ export const getIventoryStatsService = async (): Promise<InventoryResponse> => {
   }
 };
 
-export const getAllProductsPagService = async (): Promise<ProductsResponse> => {
+export const getAllProductsPagService = async (page: number, limit: number): Promise<ProductsResponse> => {
   try {
-    const response = await fetch(`${API_URL}/products`, {
+    const response = await fetch(`${API_URL}/products?page=${page}&limit=${limit}`, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -100,7 +105,87 @@ export const addProductService = async (values: CreateProductInput) => {
       const error = await response.json();
       throw new Error(error.message || "Error al agregar producto");
     }
-    const data = response.json();
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const deleteProductService = async (productId: string) => {
+  try {
+    const response = await fetch(`${API_URL}/products/${productId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Error al borrar producto");
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const updateProductStatusService = async (productId: string) => {
+  try {
+    const response = await fetch(`${API_URL}/products/update-status/${productId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Error al actualizar estado de producto");
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const updateProductService = async (productId: string, productData: Partial<CreateProductInput>) => {
+  try {
+    const response = await fetch(`${API_URL}/products/${productId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(productData),
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Error al actualizar estado de producto");
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const getProductByIdService = async (productId: string) => {
+  try {
+    const response = await fetch(`${API_URL}/products/${productId}`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Error al obtener detalle de producto");
+    }
+    const data = await response.json();
     return data;
   } catch (error) {
     console.log(error);

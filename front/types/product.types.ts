@@ -13,6 +13,10 @@ export interface Product {
     [key: string]: any;
   };
   categoryId: string;
+    category?: {
+    id: string;
+    name: string;
+  };
   images: string[];
   createdAt: string;
   updatedAt: string;
