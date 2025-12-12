@@ -10,3 +10,10 @@ export interface Customer {
     sales: number;
   };
 }
+
+export interface CreateCustomerDto {
+  name: string;
+  email: string;
+  phone?: string;  
+  address?: string; 
+}

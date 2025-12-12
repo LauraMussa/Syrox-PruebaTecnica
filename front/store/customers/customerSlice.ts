@@ -1,20 +1,29 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { Customer } from "@/types/customer.types"; 
-import { getAllCustomersService } from "@/services/customer.service";
+import { Customer } from "@/types/customer.types";
+import { createCustomerService, getAllCustomersService } from "@/services/customer.service";
 
-export const fetchCustomers = createAsyncThunk(
-  "customers/fetchAll",
-  async (_, { rejectWithValue }) => {
+//GET
+export const fetchCustomers = createAsyncThunk("customers/fetchAll", async (_, { rejectWithValue }) => {
+  try {
+    return await getAllCustomersService();
+  } catch (error: any) {
+    return rejectWithValue(error.message);
+  }
+});
+//POST
+export const addCustomer = createAsyncThunk(
+  "customers/add",
+  async (customerData: Partial<Customer>, { rejectWithValue }) => {
     try {
-      return await getAllCustomersService();
+      return await createCustomerService(customerData);
     } catch (error: any) {
-      return rejectWithValue(error.message);
+      return rejectWithValue(error.message || "Error desconocido al crear cliente");
     }
   }
 );
 
 interface CustomersState {
-  items: Customer[]; 
+  items: Customer[];
   status: "idle" | "loading" | "succeeded" | "failed";
 }
 
@@ -31,9 +40,11 @@ const customersSlice = createSlice({
     builder
       .addCase(fetchCustomers.fulfilled, (state, action) => {
         state.status = "succeeded";
-        // Si tu backend devuelve { data: [...] }, extraelo igual que en sales
         const payload = action.payload as any;
-        state.items = Array.isArray(payload) ? payload : (payload.data || []);
+        state.items = Array.isArray(payload) ? payload : payload.data || [];
+      })
+      .addCase(addCustomer.fulfilled, (state, action) => {
+        state.items.unshift(action.payload);
       });
   },
 });

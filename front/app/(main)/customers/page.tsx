@@ -64,15 +64,15 @@ export default function CustomersPage() {
           </span>
         </div>
 
-        {/* Aquí podrías poner un modal para Crear Cliente si quisieras */}
+
         <Button
+        variant="outline"
+          className="cursor-pointer"
           onClick={handleExportExcel}
           disabled={isExporting || items.length === 0}
-          variant="outline"
-          className="gap-2 cursor-pointer"
         >
-          <Download className="h-4 w-4" />
-          {isExporting ? "Descargando..." : "Descargar Reporte"}
+          <Download className="mr-2 h-4 w-4" />
+          {isExporting ? "Generando..." : "Descargar Reporte"}
         </Button>
       </div>
 

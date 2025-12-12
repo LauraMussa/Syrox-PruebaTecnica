@@ -54,9 +54,7 @@ export function CustomerCard({ customer }: Props) {
           <ShoppingBag className="h-3 w-3" />
           {customer._count?.sales || 0} Compras
         </Badge>
-        <Button variant="ghost" size="sm" className="text-xs h-8 hover:bg-primary/10 hover:text-primary">
-          Ver Detalles
-        </Button>
+       
       </CardFooter>
     </Card>
   );

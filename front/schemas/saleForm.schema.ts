@@ -11,6 +11,7 @@ export const createSaleFormSchema = z.object({
         productId: z.string().min(1, "Selecciona un producto"),
         quantity: z.number().min(1, "Mínimo 1 unidad"),
         maxStock: z.number().optional(),
+            variantId: z.string().optional(), 
       })
     )
     .refine((items) => items.length > 0, {
@@ -31,23 +32,24 @@ export const createSaleFormSchema = z.object({
 });
 
 export const updateSaleSchema = z.object({
-  // Campos de Create que ignoramos (los hacemos opcionales o any)
   customerId: z.any().optional(),
   paymentMethod: z.any().optional(),
   items: z.any().optional(),
   
   note: z.string().optional(),
   status: z.string().min(1, "El estado es requerido"),
-  trackingId: z.string().optional(),
+  trackingId: z.string().optional().nullable().or(z.literal("")), 
+
 }).superRefine((data, ctx) => {
-  if ((data.status === "SHIPPED" ) && !data.trackingId) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: "El número de tracking es obligatorio para envíos",
-      path: ["trackingId"],
-    });
+  if (data.status === "SHIPPED") {
+    if (!data.trackingId || data.trackingId.trim() === "") {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "El número de tracking es obligatorio para envíos",
+        path: ["trackingId"],
+      });
+    }
   }
 });
-
 
 export type SaleFormValues = z.infer<typeof createSaleFormSchema>; 

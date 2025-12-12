@@ -1,11 +1,27 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Edit, Trash2, Search, Filter, Plus, ChevronLeft, ChevronRight, Upload, Eye } from "lucide-react";
+import {
+  Edit,
+  Trash2,
+  Search,
+  Filter,
+  Plus,
+  ChevronLeft,
+  ChevronRight,
+  Upload,
+  Eye,
+  Download,
+} from "lucide-react";
 import { toast } from "sonner";
 
 // Redux
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { fetchPagProducts, toggleProductStatus, deleteProduct } from "@/store/products/productsSlice";
+import {
+  fetchPagProducts,
+  toggleProductStatus,
+  deleteProduct,
+  fetchProducts,
+} from "@/store/products/productsSlice";
 import { Product } from "@/types/product.types";
 
 // Components
@@ -28,6 +44,7 @@ import {
 import Link from "next/link";
 import { ProductFormModal } from "@/components/products/ProductFormModal";
 import { ProductListSkeleton } from "@/components/skeletons/lists/ProductListSkeleton";
+import { exportProductsToExcel } from "@/lib/exports/products.export";
 
 export default function ProductsListPage() {
   const dispatch = useAppDispatch();
@@ -61,14 +78,36 @@ export default function ProductsListPage() {
   };
 
   const filteredItems = items.filter((p: Product) => p.name.toLowerCase().includes(searchTerm.toLowerCase()));
+  const [isExporting, setIsExporting] = useState(false);
 
+  const handleExport = async () => {
+    try {
+      setIsExporting(true);
+      toast.info("Obteniendo catálogo completo...");
+      const allProducts = await dispatch(fetchProducts()).unwrap();
+
+      if (!allProducts || allProducts.data.length === 0) {
+        toast.warning("El catálogo está vacío");
+        return;
+      }
+      exportProductsToExcel(allProducts.data);
+
+      toast.success(`Reporte generado con ${allProducts.data.length} productos`);
+    } catch (error) {
+      console.error("Error exportando:", error);
+      toast.error("Error al obtener los productos para el reporte");
+    } finally {
+      setIsExporting(false);
+    }
+  };
   return (
     <div className="p-6 space-y-6 bg-background min-h-screen">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h1 className="text-2xl font-bold tracking-tight">Productos</h1>
         <div className="flex gap-2 w-full sm:w-auto">
-          <Button variant="outline" className="gap-2 flex-1 sm:flex-none">
-            <Upload className="h-4 w-4" /> Importar
+          <Button className="cursor-pointer " variant="outline" onClick={handleExport} disabled={isExporting}>
+            <Download className="mr-2 h-4 w-4" />
+            {isExporting ? "Generando..." : "Descargar Reporte"}
           </Button>
           <Button className="cursor-pointer" onClick={handleOpenCreate}>
             <Plus className="h-4 w-4" /> Nuevo Producto
@@ -85,14 +124,6 @@ export default function ProductsListPage() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-        </div>
-        <div className="flex gap-2">
-          <Button variant="outline" className="gap-2">
-            <Filter className="h-4 w-4" /> Filtros
-          </Button>
-          <Button variant="ghost" onClick={() => setSearchTerm("")}>
-            Limpiar
-          </Button>
         </div>
       </div>
 
@@ -121,7 +152,7 @@ export default function ProductsListPage() {
           </TableHeader>
           <TableBody>
             {loading ? (
-              <ProductListSkeleton  />
+              <ProductListSkeleton />
             ) : filteredItems.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={7} className="text-center py-12 text-muted-foreground">

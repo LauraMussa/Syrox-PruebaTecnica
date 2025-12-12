@@ -78,7 +78,7 @@ export const updateSaleStatusService = async (id: string, dto: UpdateSaleStatusD
       headers: getAuthHeaders(),
       body: JSON.stringify({
         status: dto.status,
-        trackingId: dto.trackingId,
+        trackingId: dto.trackingId || "",
         note: dto.note,
       }),
     });

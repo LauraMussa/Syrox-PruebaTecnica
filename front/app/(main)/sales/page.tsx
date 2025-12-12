@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Edit, Eye, Search, Plus } from "lucide-react";
+import { Edit, Eye, Search, Plus, Download } from "lucide-react";
 import Link from "next/link";
 
 // Redux
@@ -17,7 +17,8 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 import { PaginationControls } from "@/components/ui/pagination-controls";
 import { SalesListSkeleton } from "@/components/skeletons/lists/SalesListSkeleton";
-import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { exportSalesToExcel } from "@/lib/exports/sales.export";
 
 // Helpers visuales
 const getStatusColor = (status: string) => {
@@ -74,7 +75,7 @@ export default function SalesListPage() {
   // Usamos el slice de ventas
   const { paginated } = useAppSelector((state: any) => state.sales);
   const { items, meta, loading } = paginated;
-  const router = useRouter();
+  
   const safeMeta = meta || { page: 1, lastPage: 1, totalSales: 0 };
   useEffect(() => {
     dispatch(fetchPagSales({ page: 1, limit: 10 }));
@@ -85,26 +86,51 @@ export default function SalesListPage() {
       dispatch(fetchPagSales({ page: newPage, limit: 10 }));
     }
   };
-  const handleEdit = (sale: Sale) => {
-    setSaleToEdit(sale);
-    router.push(`/sales/create-sale/${sale.id}`);
-    // setIsUpdateModalOpen(true);
-  };
+
   const filteredItems = items.filter(
     (s: Sale) =>
       s.customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       s.orderNumber.toLowerCase().includes(searchTerm.toLowerCase())
   );
+  const [isExporting, setIsExporting] = useState(false);
+
+  const handleExport = async () => {
+    try {
+      setIsExporting(true);
+
+      if (!items || items.length === 0) {
+        toast.error("No hay ventas para exportar");
+        return;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      exportSalesToExcel(items);
+      toast.success("Reporte de ventas descargado");
+    } catch (error) {
+      console.error(error);
+      toast.error("Error al generar el reporte");
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   return (
     <div className="p-6 space-y-6 bg-background min-h-screen">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h1 className="text-2xl font-bold tracking-tight">Ventas</h1>
-        <Link href={`/sales/create-sale`}>
-          <Button className="cursor-pointer">
-            <Plus className="h-4 w-4 mr-2" /> Nuevo Pedido
+        <div className="gap-2 flex items-center">
+          
+          <Button  className="cursor-pointer " variant="outline" onClick={handleExport} disabled={isExporting}>
+            <Download className="mr-2 h-4 w-4" />
+            {isExporting ? "Generando..." : "Descargar Reporte"}
           </Button>
-        </Link>
+
+          <Link href={`/sales/create-sale`}>
+            <Button className="cursor-pointer">
+              <Plus className="h-4 w-4 mr-2" /> Nuevo Pedido
+            </Button>
+          </Link>
+        </div>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-4 p-4 border rounded-lg bg-card shadow-sm">
@@ -162,7 +188,6 @@ export default function SalesListPage() {
                     </div>
                   </TableCell>
 
-                  {/* Número de Orden */}
                   <TableCell>
                     <div className="flex flex-col">
                       <span className="font-mono text-sm font-medium">{sale.orderNumber}</span>
@@ -170,7 +195,6 @@ export default function SalesListPage() {
                     </div>
                   </TableCell>
 
-                  {/* Estado */}
                   <TableCell>
                     <Badge variant="outline" className={`font-medium ${getStatusColor(sale.status)}`}>
                       {sale.status}
@@ -186,14 +210,12 @@ export default function SalesListPage() {
                     </div>
                   </TableCell>
 
-                  {/* Pago */}
                   <TableCell className="text-center">
                     <Badge className={`px-2 py-0.5 text-[10px] ${getPaymentColor(sale.paymentStatus)}`}>
                       {sale.paymentStatus}
                     </Badge>
                   </TableCell>
 
-                  {/* Acciones */}
                   <TableCell className="text-right pr-5">
                     <div className="flex justify-end items-center gap-1">
                       <Link href={`/sales/details/${sale.id}`}>
