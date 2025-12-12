@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "sales" ALTER COLUMN "total" SET DATA TYPE DECIMAL(20,2);

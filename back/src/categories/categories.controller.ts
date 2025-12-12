@@ -11,6 +11,7 @@ import {
   ParseBoolPipe,
   Put,
   ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -19,8 +20,10 @@ import {
   UpdateCategoryDto,
 } from './dto/update-category.dto';
 import { PaginationDto } from 'src/products/dto/pagination.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('categories')
+@UseGuards(JwtAuthGuard)
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 

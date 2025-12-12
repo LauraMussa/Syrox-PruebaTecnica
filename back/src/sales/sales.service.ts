@@ -102,6 +102,8 @@ export class SalesService {
               name: true,
               description: true,
               price: true,
+              brand: true,
+              category: true,
             },
           },
         },

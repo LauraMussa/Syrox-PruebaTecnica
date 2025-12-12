@@ -35,6 +35,7 @@ Content-Type: application/json
 ###Obtiene todos los productos
 GET http://localhost:3001/products
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmZWU0MDJhZS05YTAzLTQ4MmItODFhMi1iM2JiMmY3ZGUzZDYiLCJlbWFpbCI6ImxhdXJhbXVzc2E5NEBnbWFpbC5jb20iLCJpYXQiOjE3NjU1MTczNzIsImV4cCI6MTc2NTYwMzc3Mn0.WXsiqOwytldCa4bE2HNgPjEq4ODsEVFq6o9xmBmfr48
 
 
 ###Obtiene un producto por id

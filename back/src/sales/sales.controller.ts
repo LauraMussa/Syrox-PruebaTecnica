@@ -7,13 +7,16 @@ import {
   Param,
   Delete,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { SalesService } from './sales.service';
 import { CreateSaleDto } from './dto/create-sale.dto';
 import { UpdateSaleStatusDto } from './dto/update-sale.dto';
 import { PaginationDto } from 'src/products/dto/pagination.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('sales')
+@UseGuards(JwtAuthGuard)
 export class SalesController {
   constructor(private readonly salesService: SalesService) {}
 
@@ -24,7 +27,6 @@ export class SalesController {
 
   @Get()
   findAll(@Query() paginationDto?: PaginationDto) {
-    console.log("Pagination DTO recibido:", paginationDto);
     return this.salesService.findAll(paginationDto);
   }
 

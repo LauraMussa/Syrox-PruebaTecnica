@@ -26,6 +26,7 @@ export class RegisterDto {
 
   @IsString()
   repeatPassword: string; 
+  
 }
 
 export class LoginDto {

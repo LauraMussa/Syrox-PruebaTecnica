@@ -35,6 +35,8 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   name      String
+  address   String?
+  phone     String?
 
   @@map("users")
 }
@@ -93,7 +95,7 @@ model Customer {
 model Sale {
   id              String        @id @default(uuid())
   orderNumber     String        @unique
-  total           Decimal       @db.Decimal(10, 2)
+  total           Decimal       @db.Decimal(20, 2)
   status          OrderStatus   @default(PENDING)
   paymentStatus   PaymentStatus @default(PENDING)
   paymentMethod   String?
@@ -126,9 +128,9 @@ model SaleHistory {
   id        String      @id @default(uuid())
   saleId    String
   sale      Sale        @relation(fields: [saleId], references: [id])
-  status    OrderStatus 
-  note      String? 
-  changedBy String? 
+  status    OrderStatus
+  note      String?
+  changedBy String?
   createdAt DateTime    @default(now())
 
   @@map("sale_history")
