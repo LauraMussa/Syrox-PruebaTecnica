@@ -17,8 +17,6 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 import { PaginationControls } from "@/components/ui/pagination-controls";
 import { SalesListSkeleton } from "@/components/skeletons/lists/SalesListSkeleton";
-import { CreateSaleModal } from "@/components/sales/CreateSaleModal";
-import { UpdateSaleModal } from "@/components/sales/UpdateSaleModal";
 import { useRouter } from "next/navigation";
 
 // Helpers visuales
@@ -102,10 +100,11 @@ export default function SalesListPage() {
     <div className="p-6 space-y-6 bg-background min-h-screen">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h1 className="text-2xl font-bold tracking-tight">Ventas</h1>
-        {/* <Link href={`/sales/create-sale/${sale.id}`}></Link> */}
-        <Button className="cursor-pointer" onClick={() => setIsCreateModalOpen(true)}>
-          <Plus className="h-4 w-4 mr-2" /> Nuevo Pedido
-        </Button>
+        <Link href={`/sales/create-sale`}>
+          <Button className="cursor-pointer">
+            <Plus className="h-4 w-4 mr-2" /> Nuevo Pedido
+          </Button>
+        </Link>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-4 p-4 border rounded-lg bg-card shadow-sm">
@@ -180,7 +179,7 @@ export default function SalesListPage() {
 
                   <TableCell className="text-right">
                     <div className="flex flex-col items-end">
-                      <span className="font-bold">{formatCurrency(sale.total)}</span>
+                      <span className="font-bold">{formatCurrency(Number(sale.total))}</span>
                       <span className="text-xs text-muted-foreground capitalize">
                         {sale.paymentMethod.toLowerCase()}
                       </span>
@@ -206,7 +205,7 @@ export default function SalesListPage() {
                           <Eye className="h-4 w-4" />
                         </Button>
                       </Link>
-                      <Link href={`/sales/create-sale/${sale.id}`}>
+                      <Link href={`/sales/update-sale/${sale.id}`}>
                         <Button
                           variant="ghost"
                           size="icon"
@@ -222,8 +221,7 @@ export default function SalesListPage() {
             )}
           </TableBody>
         </Table>
-        {/* <UpdateSaleModal open={isUpdateModalOpen} onOpenChange={setIsUpdateModalOpen} sale={saleToEdit} /> */}
-        <CreateSaleModal open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen} />
+
         <PaginationControls
           currentPage={safeMeta.page}
           lastPage={safeMeta.lastPage}

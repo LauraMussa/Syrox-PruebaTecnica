@@ -6,4 +6,7 @@ export interface Customer {
   address: string;
   createdAt: string;
   updatedAt: string;
+    _count?: {
+    sales: number;
+  };
 }

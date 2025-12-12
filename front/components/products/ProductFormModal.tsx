@@ -158,7 +158,7 @@ export function ProductFormModal({
         <DialogTrigger asChild>
           <Button className="h-8 px-3 text-xs border-none cursor-pointer flex-1 sm:flex-none">
             <Plus className="h-2 w-2 mr-1" />
-            <span className="mt-px">Nuevo Producto</span>
+            <span className="mt-px">Añadir</span>
           </Button>
         </DialogTrigger>
       )}
@@ -260,8 +260,8 @@ export function ProductFormModal({
                   placeholder="0.00"
                   {...register("price", { valueAsNumber: true })}
                 />
+                {errors.price && <p className="text-xs text-destructive">{errors.price.message}</p>}
               </div>
-              {errors.price && <p className="text-xs text-destructive">{errors.price.message}</p>}
             </div>
 
             <div className="space-y-2">
@@ -297,6 +297,9 @@ export function ProductFormModal({
                   <Plus className="w-4 h-4 " />
                 </Button>
               </div>
+              {errors.options?.color?.message && (
+                <p className="text-xs text-destructive">{errors.options?.color?.message}</p>
+              )}
               <div className="flex flex-wrap gap-2 mt-2">
                 {currentOptions.color?.map((c: string, i: number) => (
                   <div key={i} className="bg-muted px-2 py-1 rounded text-xs flex items-center gap-1">
@@ -325,6 +328,9 @@ export function ProductFormModal({
                   <Plus className="w-4 h-4" />
                 </Button>
               </div>
+                {errors.options?.talla?.message && (
+                <p className="text-xs text-destructive">{errors.options?.talla?.message}</p>
+              )}
               <div className="flex flex-wrap gap-2 mt-2">
                 {currentOptions.talla?.map((t: string | number, i: number) => (
                   <div key={i} className="bg-muted px-2 py-1 rounded text-xs flex items-center gap-1">
@@ -366,7 +372,7 @@ export function ProductFormModal({
                 </div>
               ))}
             </div>
-             {errors.images && <p className="text-xs text-destructive">{errors.images.message}</p>}
+            {errors.images && <p className="text-xs text-destructive">{errors.images.message}</p>}
           </div>
 
           <div className="space-y-2">
@@ -400,7 +406,7 @@ export function ProductFormModal({
                 type="button"
                 variant="ghost"
                 onClick={() => reset()}
-                className="mr-auto cursor-pointer hover:bg-destructive/60 bg-destructive/50 "
+                className="mr-auto cursor-pointer hover:text-background text-background dark:hover:bg-destructive bg-destructive/90 hover:bg-destructive"
               >
                 Limpiar
               </Button>

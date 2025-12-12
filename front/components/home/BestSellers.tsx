@@ -42,11 +42,11 @@ const BestSellers = () => {
             key={product.id}
             className="flex items-center gap-3 p-2 rounded-lg hover:bg-accent/5 transition-colors border-b border-border last:border-0 last:pb-0"
           >
-            <div className="h-10 w-10 shrink-0 rounded-md bg-muted flex items-center justify-center overflow-hidden border border-border">
+            <div className="h-10 w-10 shrink-0 rounded-md bg-muted-foreground/70 flex items-center justify-center overflow-hidden border border-border">
               {product.images && product.images.length > 0 ? (
                 <img src={product.images[0]} alt={product.name} className="h-full w-full object-cover" />
               ) : (
-                <Package className="h-5 w-5 text-muted-foreground/50" />
+                <Package className="h-5 w-5 text-background" />
               )}
             </div>
 

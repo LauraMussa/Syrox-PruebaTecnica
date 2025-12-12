@@ -133,10 +133,10 @@ export default function SaleDetailPage() {
                           {item.product.description}
                         </div>
                       </TableCell>
-                      <TableCell className="text-right">{formatCurrency(item.price)}</TableCell>
+                      <TableCell className="text-right">{formatCurrency(Number(item.price))}</TableCell>
                       <TableCell className="text-right">{item.quantity}</TableCell>
                       <TableCell className="text-right font-bold">
-                        {formatCurrency(item.price * item.quantity)}
+                        {formatCurrency(Number(item.price) * item.quantity)}
                       </TableCell>
                     </TableRow>
                   ))}

@@ -1,3 +1,4 @@
+import { getAuthHeaders } from "@/helpers/api-helper";
 import {
   Category,
   ParentCategory,
@@ -18,15 +19,14 @@ const handleResponse = async (response: Response) => {
   return response.json();
 };
 
-
 export const getAllCategoriesPaginatedService = async (
-  page: number = 1, 
+  page: number = 1,
   limit: number = 10
 ): Promise<PaginatedCategoriesResponse> => {
   try {
     const response = await fetch(`${API_URL}/categories?page=${page}&limit=${limit}`, {
       method: "GET",
-      headers: { "Content-Type": "application/json" },
+      headers: getAuthHeaders(),
     });
     return await handleResponse(response);
   } catch (error) {
@@ -39,7 +39,7 @@ export const getAllParentCategoriesService = async (): Promise<ParentCategory[]>
   try {
     const response = await fetch(`${API_URL}/categories/parent`, {
       method: "GET",
-      headers: { "Content-Type": "application/json" },
+      headers: getAuthHeaders(),
     });
     return await handleResponse(response);
   } catch (error) {
@@ -52,7 +52,7 @@ export const getCategoryTreeService = async (): Promise<Category[]> => {
   try {
     const response = await fetch(`${API_URL}/categories/tree`, {
       method: "GET",
-      headers: { "Content-Type": "application/json" },
+      headers: getAuthHeaders(),
     });
     return await handleResponse(response);
   } catch (error) {
@@ -65,7 +65,7 @@ export const addCategoryService = async (data: CreateCategoryDto): Promise<Categ
   try {
     const response = await fetch(`${API_URL}/categories`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: getAuthHeaders(),
       body: JSON.stringify(data),
     });
     return await handleResponse(response);
@@ -79,7 +79,7 @@ export const updateCategoryService = async (id: string, data: UpdateCategoryDto)
   try {
     const response = await fetch(`${API_URL}/categories/${id}`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: getAuthHeaders(),
       body: JSON.stringify(data),
     });
     return await handleResponse(response);
@@ -95,7 +95,7 @@ export const deleteCategoryService = async (id: string, force: boolean = false):
 
     const response = await fetch(url, {
       method: "DELETE",
-      headers: { "Content-Type": "application/json" },
+      headers: getAuthHeaders(),
     });
     return await handleResponse(response);
   } catch (error) {
@@ -104,12 +104,11 @@ export const deleteCategoryService = async (id: string, force: boolean = false):
   }
 };
 
-
 export const reorderCategoriesService = async (data: ReorderCategoryDto): Promise<void> => {
   try {
     const response = await fetch(`${API_URL}/categories/reorder`, {
-      method: "POST", // Verifica si en tu Controller es POST o PATCH
-      headers: { "Content-Type": "application/json" },
+      method: "POST",
+      headers: getAuthHeaders(),
       body: JSON.stringify(data),
     });
     return await handleResponse(response);

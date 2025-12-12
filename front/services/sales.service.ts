@@ -1,7 +1,7 @@
 const API_URL = process.env.NEXT_PUBLIC_API;
-import { OrderStatus, Sale, UpdateSaleStatusDto } from "@/types/sale.types";
+import { getAuthHeaders } from "@/helpers/api-helper";
+import { CreateSaleDto, OrderStatus, Sale, UpdateSaleStatusDto } from "@/types/sale.types";
 
-// Helper de respuesta
 const handleResponse = async (response: Response) => {
   if (!response.ok) {
     const error = await response.json();
@@ -22,7 +22,7 @@ export const getAllSalesService = async (): Promise<Sale[]> => {
   try {
     const response = await fetch(`${API_URL}/sales`, {
       method: "GET",
-      headers: { "Content-Type": "application/json" },
+      headers: getAuthHeaders(),
     });
     return await handleResponse(response);
   } catch (error) {
@@ -38,7 +38,7 @@ export const getAllSalesPaginatedService = async (
   try {
     const response = await fetch(`${API_URL}/sales?page=${page}&limit=${limit}`, {
       method: "GET",
-      headers: { "Content-Type": "application/json" },
+      headers: getAuthHeaders(),
     });
     return await handleResponse(response);
   } catch (error) {
@@ -49,18 +49,20 @@ export const getAllSalesPaginatedService = async (
 
 export const getSaleByIdService = async (id: string): Promise<Sale> => {
   try {
-    const response = await fetch(`${API_URL}/sales/${id}`);
+    const response = await fetch(`${API_URL}/sales/${id}`, {
+      headers: getAuthHeaders(),
+    });
     return await handleResponse(response);
   } catch (error) {
     throw error;
   }
 };
 
-export const createSaleService = async (data: any): Promise<Sale> => {
+export const createSaleService = async (data: CreateSaleDto): Promise<Sale> => {
   try {
     const response = await fetch(`${API_URL}/sales`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: getAuthHeaders(),
       body: JSON.stringify(data),
     });
     return await handleResponse(response);
@@ -73,7 +75,7 @@ export const updateSaleStatusService = async (id: string, dto: UpdateSaleStatusD
   try {
     const response = await fetch(`${API_URL}/sales/${id}`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: getAuthHeaders(),
       body: JSON.stringify({
         status: dto.status,
         trackingId: dto.trackingId,

@@ -1,10 +1,10 @@
-
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import Cookies from "js-cookie"; // Importa js-cookie
 
 interface User {
   id: string;
   email: string;
-  name: string;
+  name?: string; 
 }
 
 interface AuthState {
@@ -13,10 +13,12 @@ interface AuthState {
   isAuthenticated: boolean;
 }
 
+const tokenFromCookie = Cookies.get("auth-token") || null;
+
 const initialState: AuthState = {
-  user: null,
-  token: null,
-  isAuthenticated: false,
+  user: null, 
+  token: tokenFromCookie,
+  isAuthenticated: !!tokenFromCookie,
 };
 
 export const authSlice = createSlice({
@@ -35,6 +37,7 @@ export const authSlice = createSlice({
       state.user = null;
       state.token = null;
       state.isAuthenticated = false;
+      Cookies.remove("auth-token");
     },
   },
 });
