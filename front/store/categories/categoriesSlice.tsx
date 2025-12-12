@@ -5,6 +5,7 @@ import {
   updateCategoryService,
   deleteCategoryService,
   getAllCategoriesPaginatedService,
+  getCategoryTreeService,
 } from "@/services/categories.service";
 import { Category, CreateCategoryDto, UpdateCategoryDto } from "@/types/category.types";
 
@@ -14,6 +15,17 @@ export const fetchPagCategories = createAsyncThunk(
   async ({ page = 1, limit = 10 }: { page?: number; limit?: number }, { rejectWithValue }) => {
     try {
       return await getAllCategoriesPaginatedService(page, limit);
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const fetchCategoryTree = createAsyncThunk(
+  "categories/fetchCategoryTree",
+  async (_, { rejectWithValue }) => {
+    try {
+      return await getCategoryTreeService();
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -79,6 +91,7 @@ interface CategoryState {
     loading: boolean;
   };
   parentCategories: Category[];
+  tree: Category[];
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
 }
@@ -93,6 +106,7 @@ const initialState: CategoryState = {
     },
     loading: false,
   },
+  tree: [],
   parentCategories: [],
   status: "idle",
   error: null,
@@ -104,7 +118,7 @@ const categorySlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    ///FETCH ALL 
+    ///FETCH ALL
     builder
       .addCase(fetchPagCategories.pending, (state) => {
         state.paginated.loading = true;
@@ -120,7 +134,7 @@ const categorySlice = createSlice({
         state.error = action.payload as string;
       });
 
-    // FETCH PARENTS 
+    // FETCH PARENTS
     builder.addCase(fetchParentCategories.fulfilled, (state, action) => {
       state.parentCategories = action.payload;
     });
@@ -129,11 +143,13 @@ const categorySlice = createSlice({
     builder.addCase(addCategory.fulfilled, (state, action) => {
       state.paginated.items.unshift(action.payload);
       if (!action.payload.parentId) {
-        state.parentCategories.push(action.payload);
+        state.parentCategories.unshift(action.payload);
       }
       state.status = "succeeded";
     });
-
+    builder.addCase(fetchCategoryTree.fulfilled, (state, action) => {
+      state.tree = action.payload;
+    });
     ///UPDATE
     builder.addCase(updateCategory.fulfilled, (state, action) => {
       const updated = action.payload;
@@ -145,7 +161,7 @@ const categorySlice = createSlice({
       if (!updated.parentId && parentIndex !== -1) {
         state.parentCategories[parentIndex] = updated;
       } else if (!updated.parentId && parentIndex === -1) {
-        state.parentCategories.push(updated);
+        state.parentCategories.unshift(updated);
       } else if (updated.parentId && parentIndex !== -1) {
         state.parentCategories.splice(parentIndex, 1);
       }

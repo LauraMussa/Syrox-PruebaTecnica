@@ -7,12 +7,10 @@ import { Product } from "@/types/product.types";
 import Link from "next/link";
 import { fetchInventoryStats, fetchProducts } from "@/store/products/productsSlice";
 import { ProductFormModal } from "../products/ProductFormModal";
-import { InventoryCardSkeleton } from "../skeletons/home/InventoryCardSkeleton";
 
 const InventoryCard = () => {
   const dispatch = useAppDispatch();
-  const { stats, items, statsLoading, itemsLoading } = useAppSelector((state: any) => state.products);
-  const isLoading = statsLoading || itemsLoading || (!stats && !items.length);
+  const { stats, items} = useAppSelector((state: any) => state.products);
   const products = Array.isArray(items) ? items.slice(0, 15) : [];
 
   useEffect(() => {
@@ -32,7 +30,6 @@ const InventoryCard = () => {
       maximumFractionDigits: 0,
     }).format(value);
   };
-  if (isLoading) return <InventoryCardSkeleton />;
   return (
     <Card className="h-full flex border border-transparent flex-col shadow-sm bg-card overflow-hidden">
       <CardHeader className="pb-3 pt-4 px-4 flex flex-row items-center justify-between ">

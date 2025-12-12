@@ -5,7 +5,6 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { fetchBestSellers } from "@/store/sales/salesSlice";
 import { BestSellerProduct } from "@/types/product.types";
 import { Package, Trophy } from "lucide-react";
-import { BestSellersSkeleton } from "../skeletons/home/BestSellersSkeleton";
 
 const formatCurrency = (value: string) => {
   return new Intl.NumberFormat("es-AR", {
@@ -18,8 +17,8 @@ const formatCurrency = (value: string) => {
 
 const BestSellers = () => {
   const dispatch = useAppDispatch();
-  const { bestSellers, loadingBestSellers } = useAppSelector((state: any) => state.sales);
-  const isLoading = loadingBestSellers;
+  const { bestSellers} = useAppSelector((state: any) => state.sales);
+
   useEffect(() => {
     if (!bestSellers || bestSellers.length === 0) {
       dispatch(fetchBestSellers());
@@ -28,7 +27,6 @@ const BestSellers = () => {
 
   const topProducts = Array.isArray(bestSellers) ? bestSellers.slice(0, 5) : [];
 
-  if (isLoading) return <BestSellersSkeleton />;
   return (
     <Card className="h-full border border-transparent shadow-sm bg-card flex flex-col">
       <CardHeader className="pb-3 pt-4 px-4 flex flex-row ">

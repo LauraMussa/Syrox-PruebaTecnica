@@ -126,12 +126,12 @@ export default function CategoriesListPage() {
                       : "0 subcategorías"}
                   </TableCell>
                   <TableCell>
-                    {category.parent ? (
+                    {category.parentId !== null ? (
                       <Badge
                         variant="secondary"
                         className="text-blue-600 bg-blue-50 hover:bg-blue-100 border-blue-200"
                       >
-                        {category.parent.name}
+                        {category.parent?.name}
                       </Badge>
                     ) : (
                       <Badge variant="outline" className="text-green-600 bg-green-50 border-green-200">

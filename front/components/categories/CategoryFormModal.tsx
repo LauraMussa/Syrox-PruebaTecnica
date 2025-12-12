@@ -8,7 +8,13 @@ import { toast } from "sonner";
 
 // Redux
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { addCategory, updateCategory, fetchParentCategories } from "@/store/categories/categoriesSlice";
+import {
+  addCategory,
+  updateCategory,
+  fetchParentCategories,
+  fetchPagCategories,
+  fetchCategoryTree,
+} from "@/store/categories/categoriesSlice";
 import { Category } from "@/types/category.types";
 
 // UI Components
@@ -18,8 +24,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { categorySchema } from "@/schemas/category.schema";
-
-
 
 type CategoryFormValues = z.infer<typeof categorySchema>;
 
@@ -31,7 +35,7 @@ interface Props {
 
 export function CategoryFormModal({ open, onOpenChange, categoryToEdit }: Props) {
   const dispatch = useAppDispatch();
-  const { parentCategories } = useAppSelector((state: any) => state.categories);
+  const { parentCategories, tree } = useAppSelector((state: any) => state.categories);
   const isEditing = !!categoryToEdit;
 
   const {
@@ -49,6 +53,39 @@ export function CategoryFormModal({ open, onOpenChange, categoryToEdit }: Props)
       parentId: null,
     },
   });
+
+  const selectedParentId = watch("parentId");
+  useEffect(() => {
+    if (open) {
+      dispatch(fetchCategoryTree());
+    }
+  }, [open, dispatch]);
+
+  useEffect(() => {
+    if (categoryToEdit || !open) return;
+
+    let nextPos = 1;
+
+    if (!selectedParentId || selectedParentId === "root") {
+      // CASO RAIZ: Buscamos en el nivel superior del tree
+      if (tree.length > 0) {
+        // Asumiendo que 'tree' son las raíces
+        const max = Math.max(...tree.map((c: Category) => c.position || 0));
+        nextPos = max + 1;
+      }
+    } else {
+      // CASO SUB-CATEGORIA: Buscamos al padre dentro del tree
+      const parent = tree.find((c: Category) => c.id === selectedParentId);
+
+      if (parent && parent.children && parent.children.length > 0) {
+        const max = Math.max(...parent.children.map((child: any) => child.position || 0));
+        nextPos = max + 1;
+      }
+    }
+
+    // Solo actualizamos si el usuario no ha escrito manualmente (opcional, pero recomendado)
+    setValue("position", nextPos);
+  }, [selectedParentId, tree, open, categoryToEdit, setValue]);
 
   useEffect(() => {
     if (open) {
@@ -82,6 +119,8 @@ export function CategoryFormModal({ open, onOpenChange, categoryToEdit }: Props)
         await dispatch(addCategory(payload as any)).unwrap();
         toast.success("Categoría creada");
       }
+      dispatch(fetchParentCategories());
+      dispatch(fetchPagCategories({ page: 1, limit: 10 }));
       onOpenChange(false);
     } catch (err: any) {
       toast.error(err || "Error al guardar");
@@ -96,7 +135,6 @@ export function CategoryFormModal({ open, onOpenChange, categoryToEdit }: Props)
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-4">
-          
           {Object.keys(errors).length > 0 && (
             <div className="bg-destructive/10 border border-destructive text-destructive px-4 py-3 rounded-lg text-sm mb-4">
               <p className="font-semibold">Hay errores en el formulario:</p>
@@ -109,11 +147,11 @@ export function CategoryFormModal({ open, onOpenChange, categoryToEdit }: Props)
 
           <div className="space-y-2">
             <Label htmlFor="name">Nombre</Label>
-            <Input 
-                id="name" 
-                {...register("name")} 
-                placeholder="Nombre de la categoría" 
-                className={errors.name ? "border-destructive" : ""}
+            <Input
+              id="name"
+              {...register("name")}
+              placeholder="Nombre de la categoría"
+              className={errors.name ? "border-destructive" : ""}
             />
             {errors.name && <p className="text-xs text-destructive">{errors.name.message}</p>}
           </div>
@@ -139,20 +177,28 @@ export function CategoryFormModal({ open, onOpenChange, categoryToEdit }: Props)
               </SelectContent>
             </Select>
           </div>
+          <div className="flex items-center justify-between p-3 rounded-lg border bg-muted/30">
+            <div className="space-y-0.5">
+              <Label className="text-sm font-medium">Posición Asignada</Label>
+              <p className="text-xs text-muted-foreground">
+                Se agregará automáticamente al final de la lista.
+              </p>
+            </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="position">Posición</Label>
-            <Input 
-                id="position" 
-                type="number" 
-                {...register("position")} 
-                className={errors.position ? "border-destructive" : ""}
-            />
-            {errors.position && <p className="text-xs text-destructive">{errors.position.message}</p>}
+            <div className="flex items-center justify-center h-10 w-10 rounded-md bg-primary/10 border border-primary/20">
+              <span className="text-md font-bold text-primary">{watch("position")}</span>
+            </div>
+
+            <input type="hidden" {...register("position")} />
           </div>
 
           <DialogFooter>
-            <Button type="button" className="cursor-pointer" variant="outline" onClick={() => onOpenChange(false)}>
+            <Button
+              type="button"
+              className="cursor-pointer"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+            >
               Cancelar
             </Button>
             <Button type="submit" className="cursor-pointer" disabled={isSubmitting}>
