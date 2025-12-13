@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from "recharts";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface Props {
@@ -12,39 +12,66 @@ interface Props {
   };
 }
 
-// Paleta de colores más variada y profesional
+// PALETA DE COLORES "PRO" (Funciona en Dark y Light)
+// Evitamos rojos/verdes puros. Usamos una gama fría y elegante.
 const COLORS = [
-  "#2563eb", // Azul
-  "#16a34a", // Verde
-  "#e11d48", // Rojo/Rosa
-  "#d97706", // Naranja
-  "#7c3aed", // Violeta
-  "#0891b2", // Cyan
-  "#db2777", // Pink
+  "#6496e5", // Blue 500 (Principal)
+  "#8b5cf6", // Violet 500
+  "#06b6d4", // Cyan 500
+  "#10b981", // Emerald 500 (Para contraste suave)
+  "#f43f5e", // Rose 500 (Solo un toque cálido)
+  "#f59e0b", // Amber 500
+  "#6366f1", // Indigo 500
 ];
 
+// Tooltip personalizado (reutilizamos el estilo del otro gráfico)
+const CustomTooltip = ({ active, payload }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-popover border border-border p-3 rounded-xl shadow-lg outline-none z-50">
+        <div className="flex items-center gap-2 mb-1">
+          {/* Circulito del color correspondiente */}
+          <div 
+            className="w-2 h-2 rounded-full" 
+            style={{ backgroundColor: payload[0].payload.fill }}
+          />
+          <p className="text-sm font-medium text-muted-foreground">
+            {payload[0].name}
+          </p>
+        </div>
+        <p className="text-xl font-bold text-primary">
+          ${new Intl.NumberFormat("es-AR").format(payload[0].value)}
+        </p>
+      </div>
+    );
+  }
+  return null;
+};
+
 export function SalesPieChart({ data }: Props) {
-  // Estado para controlar qué "vista" mostrar
   const [viewMode, setViewMode] = useState<"brand" | "category">("category");
 
-  // Elegir datos según el modo
   const currentData = viewMode === "brand" ? data.byBrand : data.byCategory;
-
-  // Filtrar valores 0 para que no rompan el chart visualmente
-  const chartData = currentData.filter((d) => d.value > 0);
-
-  const getTitle = () => {
-    if (viewMode === "brand") return "Ventas por Marca";
-    if (viewMode === "category") return "Ventas por Categoría";
-  };
+  
+  const chartData = useMemo(() => {
+    return currentData
+      .filter((d) => d.value > 0)
+      .sort((a, b) => b.value - a.value); 
+  }, [currentData]);
 
   return (
-    <Card className="col-span-3">
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <CardTitle className="text-base font-medium">{getTitle()}</CardTitle>
+    <Card className="col-span-3 shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col">
+      <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0 px-4 pt-4">
+        <div className="flex flex-col gap-1">
+          <CardTitle className="text-base font-bold">Distribución de Ventas</CardTitle>
+          <CardDescription className="text-xs">
+            {viewMode === "brand" ? "Por Marcas" : "Por Categorías"}
+          </CardDescription>
+        </div>
+        
         <Select value={viewMode} onValueChange={(val: any) => setViewMode(val)}>
-          <SelectTrigger className="w-[140px] h-8 text-xs">
-            <SelectValue placeholder="Ver por..." />
+          <SelectTrigger className=" cursor-pointer w-[130px] h-8 text-xs bg-muted/50 border-muted-foreground/20">
+            <SelectValue />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="category">Categorías</SelectItem>
@@ -52,7 +79,8 @@ export function SalesPieChart({ data }: Props) {
           </SelectContent>
         </Select>
       </CardHeader>
-      <CardContent>
+
+      <CardContent className="flex-1 pb-2">
         <div className="h-[300px] w-full">
           {chartData.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
@@ -61,27 +89,44 @@ export function SalesPieChart({ data }: Props) {
                   data={chartData}
                   cx="50%"
                   cy="50%"
-                  innerRadius={60}
-                  outerRadius={80}
-                  paddingAngle={2}
+                  innerRadius={70} 
+                  outerRadius={95}
+                  paddingAngle={3} 
                   dataKey="value"
+                  stroke="none" 
+                  cornerRadius={3}
                 >
                   {chartData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
+                    <Cell 
+                      key={`cell-${index}`} 
+                      fill={COLORS[index % COLORS.length]} 
+                    />
+                  ) )}
                 </Pie>
-                <Tooltip formatter={(value: number) => [`$${value.toLocaleString()}`, "Ventas"]} />
+                
+                <Tooltip content={<CustomTooltip />} cursor={false} />
+                
                 <Legend
-                  verticalAlign="bottom"
-                  height={36}
+                  verticalAlign="middle"
+                  align="right"
+                  layout="vertical"
                   iconType="circle"
-                  formatter={(value) => <span className="text-xs text-muted-foreground ml-1">{value}</span>}
+                  iconSize={8}
+                  wrapperStyle={{ paddingLeft: "20px" }} // Separación de la leyenda
+                  formatter={(value) => (
+                    <span className="text-xs text-muted-foreground font-medium ml-1 capitalize">
+                      {value}
+                    </span>
+                  )}
                 />
               </PieChart>
             </ResponsiveContainer>
           ) : (
-            <div className="flex h-full items-center justify-center text-muted-foreground text-sm">
-              No hay datos suficientes
+            <div className="flex h-full flex-col items-center justify-center text-muted-foreground/50 gap-2">
+              <div className="w-12 h-12 rounded-full border-2 border-dashed border-muted-foreground/20 flex items-center justify-center">
+                <span className="text-xl">Ø</span>
+              </div>
+              <span className="text-sm">Sin datos registrados</span>
             </div>
           )}
         </div>

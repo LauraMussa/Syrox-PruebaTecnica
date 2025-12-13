@@ -1,4 +1,3 @@
-import { getAuthHeaders } from "@/helpers/api-helper";
 import {
   Category,
   ParentCategory,
@@ -10,7 +9,6 @@ import {
 
 const API_URL = process.env.NEXT_PUBLIC_API;
 
-// Helper para manejar errores de fetch
 const handleResponse = async (response: Response) => {
   if (!response.ok) {
     const error = await response.json();
@@ -26,7 +24,8 @@ export const getAllCategoriesPaginatedService = async (
   try {
     const response = await fetch(`${API_URL}/categories?page=${page}&limit=${limit}`, {
       method: "GET",
-      headers: getAuthHeaders(),
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
     });
     return await handleResponse(response);
   } catch (error) {
@@ -39,7 +38,8 @@ export const getAllParentCategoriesService = async (): Promise<ParentCategory[]>
   try {
     const response = await fetch(`${API_URL}/categories/parent`, {
       method: "GET",
-      headers: getAuthHeaders(),
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
     });
     return await handleResponse(response);
   } catch (error) {
@@ -52,7 +52,8 @@ export const getCategoryTreeService = async (): Promise<Category[]> => {
   try {
     const response = await fetch(`${API_URL}/categories/tree`, {
       method: "GET",
-      headers: getAuthHeaders(),
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
     });
     return await handleResponse(response);
   } catch (error) {
@@ -65,7 +66,8 @@ export const addCategoryService = async (data: CreateCategoryDto): Promise<Categ
   try {
     const response = await fetch(`${API_URL}/categories`, {
       method: "POST",
-      headers: getAuthHeaders(),
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify(data),
     });
     return await handleResponse(response);
@@ -79,7 +81,8 @@ export const updateCategoryService = async (id: string, data: UpdateCategoryDto)
   try {
     const response = await fetch(`${API_URL}/categories/${id}`, {
       method: "PATCH",
-      headers: getAuthHeaders(),
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify(data),
     });
     return await handleResponse(response);
@@ -95,7 +98,8 @@ export const deleteCategoryService = async (id: string, force: boolean = false):
 
     const response = await fetch(url, {
       method: "DELETE",
-      headers: getAuthHeaders(),
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
     });
     return await handleResponse(response);
   } catch (error) {
@@ -108,7 +112,8 @@ export const reorderCategoriesService = async (data: ReorderCategoryDto): Promis
   try {
     const response = await fetch(`${API_URL}/categories/reorder`, {
       method: "POST",
-      headers: getAuthHeaders(),
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify(data),
     });
     return await handleResponse(response);

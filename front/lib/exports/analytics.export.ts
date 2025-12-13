@@ -57,7 +57,6 @@ export function exportAnalyticsToExcel(
   wsSummary["!cols"] = [{ wch: 25 }, { wch: 20 }];
   XLSX.utils.book_append_sheet(wb, wsSummary, "Resumen General");
 
-  // HOJA 2: Ingresos por Mes
   const monthlyData = analyticsData.revenueData.map((d) => ({
     Mes: d.name.toUpperCase(),
     Ingresos: d.total,
@@ -66,7 +65,6 @@ export function exportAnalyticsToExcel(
   wsMonthly["!cols"] = [{ wch: 15 }, { wch: 20 }];
   XLSX.utils.book_append_sheet(wb, wsMonthly, "Ingresos por Mes");
 
-  // HOJA 3: Categorías
   const categoryData = analyticsData.pieData.byCategory.map((d) => ({
     Categoría: d.name,
     Ventas: d.value,
@@ -75,7 +73,6 @@ export function exportAnalyticsToExcel(
   wsCategory["!cols"] = [{ wch: 30 }, { wch: 20 }];
   XLSX.utils.book_append_sheet(wb, wsCategory, "Por Categoría");
 
-  // HOJA 4: Marcas
   const brandData = analyticsData.pieData.byBrand.map((d) => ({
     Marca: d.name,
     Ventas: d.value,

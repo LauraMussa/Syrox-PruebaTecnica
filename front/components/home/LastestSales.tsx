@@ -46,14 +46,8 @@ function ListItem({ customerName, orderNumber, status, amount, date }: any) {
 }
 
 const LastestSales = () => {
-  const dispatch = useAppDispatch();
   const { items } = useAppSelector((state: any) => state.sales);
   const sales = Array.isArray(items) ? items.slice(0, 5) : [];
-  useEffect(() => {
-    if (items.length === 0) {
-      dispatch(fetchSales());
-    }
-  }, [dispatch, items.length]);
 
   return (
     <Card className="h-full border border-transparent shadow-sm bg-card overflow-hidden flex flex-col">

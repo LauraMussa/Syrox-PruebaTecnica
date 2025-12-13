@@ -34,7 +34,7 @@ export function SaleProductsSection({ products }: SaleProductsSectionProps) {
 
   return (
     <Card className="border shadow-sm overflow-hidden">
-      <CardHeader className="bg-muted/30 pb-4 border-b">
+      <CardHeader className=" pb-4 border-b">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="p-2 bg-primary/10 rounded-full text-primary">
@@ -58,19 +58,17 @@ export function SaleProductsSection({ products }: SaleProductsSectionProps) {
       <CardContent className="p-0">
         <div className="divide-y">
           {fields.map((field, index) => {
-            // Obtenemos el producto seleccionado actualmente para mostrar su imagen/opciones
-            const currentProductId = form.watch(`items.${index}.productId`);
+               const currentProductId = form.watch(`items.${index}.productId`);
             const selectedProduct = products.find((p) => p.id === currentProductId);
 
             return (
               <div key={field.id} className="p-6 transition-colors hover:bg-muted/5">
                 <div className="flex flex-col md:flex-row gap-6 items-start">
-                  {/* Bloque Izquierdo: Imagen, Selector y Opciones */}
                   <div className="flex-1 w-full space-y-4">
                     <div className="flex flex-col md:flex-row gap-6 items-start">
-                      {/* Imagen del Producto */}
+                  
                       <div className="shrink-0">
-                        <div className="relative w-18 h-18 rounded-lg border bg-white overflow-hidden shadow-sm h-[72px] w-[72px]">
+                        <div className="relative w-18 h-18 rounded-lg border bg-white overflow-hidden shadow-sm">
                           {selectedProduct ? (
                             <Image
                               src={selectedProduct.images?.[0] || "/placeholder.png"}
@@ -79,7 +77,7 @@ export function SaleProductsSection({ products }: SaleProductsSectionProps) {
                               className="object-contain p-2"
                             />
                           ) : (
-                            <div className="flex items-center justify-center w-full h-full bg-muted text-muted-foreground">
+                            <div className="flex items-center justify-center w-full h-full bg-muted dark:bg-muted/80 dark:text-foreground text-muted-foreground ">
                               <Package className="w-8 h-8 opacity-20" />
                             </div>
                           )}
@@ -145,13 +143,9 @@ export function SaleProductsSection({ products }: SaleProductsSectionProps) {
                       </div>
                     </div>
 
-                    {/* Mensaje de error específico para variantes */}
-                    {/* {form.formState.errors.items?.[index]?.variantId && (
-                      <p className="text-sm text-red-500 mt-0 md:ml-24">Debes seleccionar talle y color.</p>
-                    )} */}
+                 
                   </div>
 
-                  {/* Bloque Derecho: Cantidad y Eliminar */}
                   <div className="flex items-end gap-3 w-full md:w-auto">
                     <FormField
                       control={form.control}

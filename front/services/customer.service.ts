@@ -1,4 +1,3 @@
-import { getAuthHeaders } from "@/helpers/api-helper";
 import { CreateCustomerDto, Customer } from "@/types/customer.types";
 
 const API_URL = process.env.NEXT_PUBLIC_API;
@@ -6,7 +5,8 @@ const API_URL = process.env.NEXT_PUBLIC_API;
 export const getAllCustomersService = async () => {
   try {
     const response = await fetch(`${API_URL}/customers`, {
-      headers: getAuthHeaders(),
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
     });
     if (!response.ok) throw new Error("Error obteniendo clientes");
     return await response.json();
@@ -19,7 +19,8 @@ export const createCustomerService = async (dto: any) => {
   try {
     const response = await fetch(`${API_URL}/customers`, {
       method: "POST",
-      headers: getAuthHeaders(),
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify(dto),
     });
     if (!response.ok) {

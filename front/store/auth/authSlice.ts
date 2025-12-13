@@ -1,5 +1,5 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import Cookies from "js-cookie";
+import { logoutService } from "@/services/auth.service";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface User {
   id: string;
@@ -9,35 +9,34 @@ interface User {
 
 interface AuthState {
   user: User | null;
-  token: string | null;
   isAuthenticated: boolean;
 }
 
-const tokenFromCookie = Cookies.get("auth-token") || null;
 const userFromStorage = typeof window !== "undefined" ? localStorage.getItem("auth-user") : null;
+
+export const performLogout = createAsyncThunk("auth/performLogout", async (_, { dispatch }) => {
+  await logoutService();
+
+  dispatch(authSlice.actions.logout());
+});
 
 const initialState: AuthState = {
   user: userFromStorage ? JSON.parse(userFromStorage) : null,
-  token: tokenFromCookie,
-  isAuthenticated: !!tokenFromCookie,
+  isAuthenticated: !!userFromStorage,
 };
 
 export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setCredentials: (state, action: PayloadAction<{ user: User; token: string }>) => {
+    setCredentials: (state, action: PayloadAction<{ user: User }>) => {
       state.user = action.payload.user;
-      state.token = action.payload.token;
       state.isAuthenticated = true;
       localStorage.setItem("auth-user", JSON.stringify(action.payload.user));
-      Cookies.set("auth-token", action.payload.token); // Aseguramos cookie
     },
     logout: (state) => {
       state.user = null;
-      state.token = null;
       state.isAuthenticated = false;
-      Cookies.remove("auth-token");
       localStorage.removeItem("auth-user");
     },
   },

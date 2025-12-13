@@ -1,6 +1,5 @@
 const API_URL = process.env.NEXT_PUBLIC_API;
-import { getAuthHeaders } from "@/helpers/api-helper";
-import { CreateSaleDto, OrderStatus, Sale, UpdateSaleStatusDto } from "@/types/sale.types";
+import { CreateSaleDto, Sale, UpdateSaleStatusDto } from "@/types/sale.types";
 
 const handleResponse = async (response: Response) => {
   if (!response.ok) {
@@ -22,7 +21,8 @@ export const getAllSalesService = async (): Promise<Sale[]> => {
   try {
     const response = await fetch(`${API_URL}/sales`, {
       method: "GET",
-      headers: getAuthHeaders(),
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
     });
     return await handleResponse(response);
   } catch (error) {
@@ -38,7 +38,8 @@ export const getAllSalesPaginatedService = async (
   try {
     const response = await fetch(`${API_URL}/sales?page=${page}&limit=${limit}`, {
       method: "GET",
-      headers: getAuthHeaders(),
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
     });
     return await handleResponse(response);
   } catch (error) {
@@ -50,7 +51,8 @@ export const getAllSalesPaginatedService = async (
 export const getSaleByIdService = async (id: string): Promise<Sale> => {
   try {
     const response = await fetch(`${API_URL}/sales/${id}`, {
-      headers: getAuthHeaders(),
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
     });
     return await handleResponse(response);
   } catch (error) {
@@ -62,7 +64,8 @@ export const createSaleService = async (data: CreateSaleDto): Promise<Sale> => {
   try {
     const response = await fetch(`${API_URL}/sales`, {
       method: "POST",
-      headers: getAuthHeaders(),
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify(data),
     });
     return await handleResponse(response);
@@ -75,7 +78,8 @@ export const updateSaleStatusService = async (id: string, dto: UpdateSaleStatusD
   try {
     const response = await fetch(`${API_URL}/sales/${id}`, {
       method: "PATCH",
-      headers: getAuthHeaders(),
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify({
         status: dto.status,
         trackingId: dto.trackingId || "",

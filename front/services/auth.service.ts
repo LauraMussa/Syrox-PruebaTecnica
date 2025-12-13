@@ -18,7 +18,6 @@ export const registerService = async (values: RegisterFormType) => {
     }
 
     const data = await response.json();
-    console.log("ESTA ES MI DATA DE REGISTER", data);
     return data;
   } catch (error) {
     console.log(error);
@@ -35,17 +34,28 @@ export const loginService = async (values: LoginFormType & { remember?: boolean 
         "Content-Type": "application/json",
       },
       body: JSON.stringify(loginPayload),
+      credentials: 'include'
     });
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || "Error al loguear el usuario");
     }
-
     const data = await response.json();
-    console.log("ESTA ES MI DATA DE LOGIN", data);
     return data;
   } catch (error) {
     console.log(error);
     throw error;
+  }
+};
+
+
+export const logoutService = async () => {
+  try {
+    await fetch(`${API_URL}/auth/logout`, {
+      method: "POST",
+      credentials: "include",
+    });
+  } catch (error) {
+    console.error("Error en logout:", error);
   }
 };

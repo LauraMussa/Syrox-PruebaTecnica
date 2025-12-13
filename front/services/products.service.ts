@@ -1,4 +1,3 @@
-import { getAuthHeaders } from "@/helpers/api-helper";
 import {
   BestSellerProduct,
   CreateProductInput,
@@ -12,7 +11,8 @@ const API_URL = process.env.NEXT_PUBLIC_API;
 export const getIventoryStatsService = async (): Promise<InventoryResponse> => {
   try {
     const response = await fetch(`${API_URL}/dashboard/inventory-stats`, {
-      headers: getAuthHeaders(),
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
     });
     if (!response.ok) {
       const error = await response.json();
@@ -31,7 +31,8 @@ export const getIventoryStatsService = async (): Promise<InventoryResponse> => {
 export const getAllProductsPagService = async (page: number, limit: number): Promise<ProductsResponse> => {
   try {
     const response = await fetch(`${API_URL}/products?page=${page}&limit=${limit}`, {
-      headers: getAuthHeaders(),
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
     });
     if (!response.ok) {
       const error = await response.json();
@@ -50,7 +51,8 @@ export const getAllProductsPagService = async (page: number, limit: number): Pro
 export const getAllProductsService = async (): Promise<ProductsResponse> => {
   try {
     const response = await fetch(`${API_URL}/dashboard/products`, {
-      headers: getAuthHeaders(),
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
     });
     if (!response.ok) {
       const error = await response.json();
@@ -69,7 +71,8 @@ export const getAllProductsService = async (): Promise<ProductsResponse> => {
 export const getBestSellersService = async (): Promise<BestSellerProduct[]> => {
   try {
     const response = await fetch(`${API_URL}/products/top-selling`, {
-      headers: getAuthHeaders(),
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
     });
     if (!response.ok) {
       const error = await response.json();
@@ -89,7 +92,8 @@ export const addProductService = async (values: CreateProductInput) => {
   try {
     const response = await fetch(`${API_URL}/products`, {
       method: "POST",
-      headers: getAuthHeaders(),
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify(values),
     });
     if (!response.ok) {
@@ -108,7 +112,8 @@ export const deleteProductService = async (productId: string) => {
   try {
     const response = await fetch(`${API_URL}/products/${productId}`, {
       method: "DELETE",
-      headers: getAuthHeaders(),
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
     });
     if (!response.ok) {
       const error = await response.json();
@@ -126,7 +131,8 @@ export const updateProductStatusService = async (productId: string) => {
   try {
     const response = await fetch(`${API_URL}/products/update-status/${productId}`, {
       method: "PATCH",
-      headers: getAuthHeaders(),
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
     });
     if (!response.ok) {
       const error = await response.json();
@@ -144,7 +150,8 @@ export const updateProductService = async (productId: string, productData: Parti
   try {
     const response = await fetch(`${API_URL}/products/${productId}`, {
       method: "PATCH",
-      headers: getAuthHeaders(),
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify(productData),
     });
     if (!response.ok) {
@@ -162,7 +169,8 @@ export const updateProductService = async (productId: string, productData: Parti
 export const getProductByIdService = async (productId: string) => {
   try {
     const response = await fetch(`${API_URL}/products/${productId}`, {
-      headers: getAuthHeaders(),
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
     });
     if (!response.ok) {
       const error = await response.json();

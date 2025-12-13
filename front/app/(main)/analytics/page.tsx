@@ -39,7 +39,6 @@ export default function AnalyticsPage() {
     try {
       setIsExporting(true); // Activamos estado de carga
 
-      // Llamamos a tu función mágica
       exportAnalyticsToExcel(analyticsData);
 
       toast.success("Reporte descargado exitosamente");
@@ -47,7 +46,6 @@ export default function AnalyticsPage() {
       console.error("Error al exportar:", error);
       toast.error("Hubo un error al generar el Excel");
     } finally {
-      // Pequeño delay para que se vea el feedback visual (opcional)
       setTimeout(() => setIsExporting(false), 500);
     }
   };

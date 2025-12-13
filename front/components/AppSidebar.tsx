@@ -1,5 +1,5 @@
 "use client";
-import { Home, Package, ShoppingCart, BarChart3, Users, LogOut } from "lucide-react";
+import { Home, Package, ShoppingCart, BarChart3, Users, LogOut, Menu } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -17,14 +17,14 @@ import {
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
-import { logout } from "@/store/auth/authSlice";
+import { logout, performLogout } from "@/store/auth/authSlice";
 import { useAppDispatch } from "@/store/hooks";
 
 const items = [
   { title: "Inicio", icon: Home, url: "/" },
   { title: "Ventas", icon: ShoppingCart, url: "/sales" },
   { title: "Productos", icon: Package, url: "/products" },
-  { title: "Categorías", icon: Package, url: "/categories" },
+  { title: "Categorías", icon: Menu, url: "/categories" },
   { title: "Clientes", icon: Users, url: "/customers" },
   { title: "Analíticas", icon: BarChart3, url: "/analytics" },
 ];
@@ -35,8 +35,9 @@ export function AppSidebar() {
   const { state } = useSidebar();
 
   const router = useRouter();
+  
   const handleLogout = () => {
-    dispatch(logout());
+    dispatch(performLogout());
     router.push("/login");
   };
 

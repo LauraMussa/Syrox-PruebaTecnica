@@ -87,7 +87,7 @@ export function SaleActionsSection({ isNew, isSubmitting }: SaleActionsSectionPr
                 <FormLabel className="text-base">Método de Pago</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
-                    <SelectTrigger className="h-12 bg-background">
+                    <SelectTrigger className="h-12 bg-background cursor-pointer">
                       <SelectValue />
                     </SelectTrigger>
                   </FormControl>
@@ -108,7 +108,7 @@ export function SaleActionsSection({ isNew, isSubmitting }: SaleActionsSectionPr
         <Button
           type="submit"
           size="lg"
-          className="w-full text-lg h-12 shadow-lg hover:shadow-primary/25 transition-all cursor-pointer"
+          className="w-full text-lg h-12 shadow-sm transition-all cursor-pointer"
           disabled={isSubmitting}
         >
           {isSubmitting ? (

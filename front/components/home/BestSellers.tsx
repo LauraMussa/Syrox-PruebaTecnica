@@ -16,14 +16,7 @@ const formatCurrency = (value: string) => {
 };
 
 const BestSellers = () => {
-  const dispatch = useAppDispatch();
   const { bestSellers} = useAppSelector((state: any) => state.sales);
-
-  useEffect(() => {
-    if (!bestSellers || bestSellers.length === 0) {
-      dispatch(fetchBestSellers());
-    }
-  }, [dispatch, bestSellers?.length]);
 
   const topProducts = Array.isArray(bestSellers) ? bestSellers.slice(0, 5) : [];
 

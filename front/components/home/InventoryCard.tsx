@@ -9,18 +9,9 @@ import { fetchInventoryStats, fetchProducts } from "@/store/products/productsSli
 import { ProductFormModal } from "../products/ProductFormModal";
 
 const InventoryCard = () => {
-  const dispatch = useAppDispatch();
   const { stats, items} = useAppSelector((state: any) => state.products);
   const products = Array.isArray(items) ? items.slice(0, 15) : [];
 
-  useEffect(() => {
-    if (stats.totalProducts === 0) {
-      dispatch(fetchInventoryStats());
-    }
-    if (items.length === 0) {
-      dispatch(fetchProducts());
-    }
-  }, [dispatch, stats.totalProducts, items.length]);
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat("es-AR", {
