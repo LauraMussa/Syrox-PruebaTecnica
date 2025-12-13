@@ -1,13 +1,14 @@
 ###
 POST http://localhost:3001/customers
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4YmI4OGEwNS0zNThhLTRiODEtODE0Mi03NjhiNmU0MWQ1ZDYiLCJlbWFpbCI6ImxhdXJhbXVzc2E5NEBnbWFpbC5jb20iLCJpYXQiOjE3NjU2MzUyMDYsImV4cCI6MTc2NTcyMTYwNn0.SnWpJpVjCIVV9396NhiNE-oOVftzLeuGHJpFrEbMVKw
 
-{
-  "name": "Laura Mussa",
-  "email": "laura@gmail.com",
-  "address": "Calle 123, Mendoza",
-  "phone": "123456789"
-}
+  {
+    "name": "Ana García",
+    "email": "ana.garcia_dev@hotmail.com",
+    "address": "Calle Belgrano 120, Rosario",
+    "phone": "3415678901"
+  }
 
 ###
 GET http://localhost:3001/customers
