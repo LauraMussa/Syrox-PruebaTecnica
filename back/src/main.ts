@@ -10,7 +10,7 @@ async function bootstrap() {
   expressApp.set('trust proxy', 1);
   const config = new DocumentBuilder()
     .setTitle('SyroxTech API')
-    .setDescription('Documentación de la API para el e-commerce SyroxTech')
+    .setDescription('Documentación de la API para SyroxTech')
     .setVersion('1.0')
     .addBearerAuth()
     .build();

@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
   provider     = "prisma-client"
@@ -139,12 +134,10 @@ model SaleHistory {
 
 model AuditLog {
   id          String   @id @default(uuid())
-  action      String // Ej: "CREAR_PRODUCTO", "ACTUALIZAR_VENTA"
-  description String // Ej: "Se creó el producto Nike Air Force"
-  userId      String // El ID del usuario que hizo la acción
+  action      String 
+  description String 
+  userId      String 
   user        User     @relation(fields: [userId], references: [id])
   createdAt   DateTime @default(now())
-
-  // Opcional: Si quieres guardar metadatos extra (ej: el precio anterior y el nuevo)
   metadata Json?
 }

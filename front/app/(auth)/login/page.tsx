@@ -12,13 +12,11 @@ export default function LoginPage() {
 
     try {
       const response = await loginService(data as LoginFormType);
-      
       dispatch(
         setCredentials({
           user: response.user,
         })
       );
-
     } catch (error) {
       console.log(error);
       throw error; 

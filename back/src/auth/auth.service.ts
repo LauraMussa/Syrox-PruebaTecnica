@@ -25,6 +25,7 @@ export class AuthService {
     }
 
     const hashedPassword = await bcrypt.hash(dto.password, 10);
+
     return this.prisma.user.create({
       data: {
         name: dto.name,
@@ -50,6 +51,7 @@ export class AuthService {
     }
 
     const correctPassword = await bcrypt.compare(dto.password, user.password);
+    
     if (!correctPassword) {
       throw new BadRequestException('Credenciales invalidas');
     }

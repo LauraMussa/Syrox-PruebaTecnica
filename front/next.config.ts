@@ -7,22 +7,25 @@ const nextConfig: NextConfig = {
         hostname: "res.cloudinary.com",
         pathname: "/dvgnwrkvl/**",
       },
+      {
+        protocol: "https",
+        hostname: "placehold.co",
+      },
     ],
   },
   turbopack: {
     root: __dirname,
   },
-   async rewrites() {
+  async rewrites() {
     return {
-      
       beforeFiles: [
         {
-          source: '/api/:path*',
-          destination: `${process.env.BACKEND_URL}/:path*`, 
+          source: "/api/:path*",
+          destination: `${process.env.BACKEND_URL}/:path*`,
         },
       ],
-     
-      fallback: []
+
+      fallback: [],
     };
   },
 };

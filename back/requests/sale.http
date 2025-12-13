@@ -24,17 +24,17 @@ Content-Type: application/json
 ### Obtener todas las ventas
 GET http://localhost:3001/sales
 Content-Type: application/json
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4YmI4OGEwNS0zNThhLTRiODEtODE0Mi03NjhiNmU0MWQ1ZDYiLCJlbWFpbCI6ImxhdXJhbXVzc2E5NEBnbWFpbC5jb20iLCJpYXQiOjE3NjU2MzUyMDYsImV4cCI6MTc2NTcyMTYwNn0.SnWpJpVjCIVV9396NhiNE-oOVftzLeuGHJpFrEbMVKw
 
 
 
 ### Obtener una sola venta
-GET http://localhost:3001/sales/c9c71ed0-6910-44f2-a5cf-08e2b4ee6f8d
+GET http://localhost:3001/sales/27b04aaa-698e-48fb-91a7-d472d3d7191f
 Content-Type: application/json
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4YmI4OGEwNS0zNThhLTRiODEtODE0Mi03NjhiNmU0MWQ1ZDYiLCJlbWFpbCI6ImxhdXJhbXVzc2E5NEBnbWFpbC5jb20iLCJpYXQiOjE3NjU2MzUyMDYsImV4cCI6MTc2NTcyMTYwNn0.SnWpJpVjCIVV9396NhiNE-oOVftzLeuGHJpFrEbMVKw
 
 ### Modificar order status
-PATCH http://localhost:3001/sales/08b44e48-19e0-4e80-a078-2217032cc6c7
+PATCH http://localhost:3001/sales/27b04aaa-698e-48fb-91a7-d472d3d7191f
 Content-Type: application/json
 
 {

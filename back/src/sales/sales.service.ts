@@ -88,6 +88,7 @@ export class SalesService {
       return sale;
     });
   }
+
   async findAll(paginationDto?: PaginationDto) {
     const { page, limit } = paginationDto || {};
 
@@ -154,6 +155,7 @@ export class SalesService {
                 name: true,
                 description: true,
                 price: true,
+                images: true,
               },
             },
           },

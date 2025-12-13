@@ -6,28 +6,26 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Plus, Trash, ShoppingBag, Package } from "lucide-react";
 import Image from "next/image";
-import { OptiontSelector } from "@/components/sales/OptionSelector"; // Asegúrate de que la ruta sea correcta
-import { Product } from "@/types/product.types"; // O ajusta según tu tipo
+import { OptiontSelector } from "@/components/sales/OptionSelector";
+import { Product } from "@/types/product.types";
 
 interface SaleProductsSectionProps {
-  products: Product[]; // O any[] si prefieres, pero Product[] es mejor
+  products: Product[];
 }
 
 export function SaleProductsSection({ products }: SaleProductsSectionProps) {
   const form = useFormContext();
 
-  // Extraemos los métodos del field array vinculados al formulario padre
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: "items",
   });
 
-  // Lógica para manejar cambios de producto
   const handleProductChange = (index: number, productId: string) => {
     const product = products.find((p) => p.id === productId);
     form.setValue(`items.${index}.productId`, productId);
     form.setValue(`items.${index}.maxStock`, product?.stock || 0);
-    // Disparamos validación de cantidad y limpiamos errores viejos
+
     form.trigger(`items.${index}.quantity`);
     form.clearErrors(`items.${index}.productId`);
   };
@@ -58,7 +56,7 @@ export function SaleProductsSection({ products }: SaleProductsSectionProps) {
       <CardContent className="p-0">
         <div className="divide-y">
           {fields.map((field, index) => {
-               const currentProductId = form.watch(`items.${index}.productId`);
+            const currentProductId = form.watch(`items.${index}.productId`);
             const selectedProduct = products.find((p) => p.id === currentProductId);
 
             return (
@@ -66,15 +64,15 @@ export function SaleProductsSection({ products }: SaleProductsSectionProps) {
                 <div className="flex flex-col md:flex-row gap-6 items-start">
                   <div className="flex-1 w-full space-y-4">
                     <div className="flex flex-col md:flex-row gap-6 items-start">
-                  
                       <div className="shrink-0">
                         <div className="relative w-18 h-18 rounded-lg border bg-white overflow-hidden shadow-sm">
                           {selectedProduct ? (
                             <Image
-                              src={selectedProduct.images?.[0] || "/placeholder.png"}
+                              src={selectedProduct.images?.[0] || "https://placehold.co/400x400/png"}
                               alt={selectedProduct.name}
                               fill
                               className="object-contain p-2"
+                              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                             />
                           ) : (
                             <div className="flex items-center justify-center w-full h-full bg-muted dark:bg-muted/80 dark:text-foreground text-muted-foreground ">
@@ -142,8 +140,6 @@ export function SaleProductsSection({ products }: SaleProductsSectionProps) {
                         )}
                       </div>
                     </div>
-
-                 
                   </div>
 
                   <div className="flex items-end gap-3 w-full md:w-auto">
