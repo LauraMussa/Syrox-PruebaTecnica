@@ -70,7 +70,7 @@ export class CategoriesService {
         parent: true,
         children: true,
       },
-      orderBy: { position: 'asc' },
+      orderBy: { position: 'desc' },
     });
     const lastPage = Math.ceil(totalCategories / limit);
 
@@ -90,14 +90,14 @@ export class CategoriesService {
       include: {
         children: true,
       },
-      orderBy: { position: 'asc' },
+      orderBy: { position: 'desc' },
     });
   }
 
   async findAllParent() {
     return this.prisma.category.findMany({
       where: { parentId: null },
-      orderBy: { position: 'asc' },
+      orderBy: { position: 'desc' },
     });
   }
 
@@ -124,6 +124,7 @@ export class CategoriesService {
     return this.prisma.category.update({
       where: { id },
       data: dto,
+      
     });
   }
 

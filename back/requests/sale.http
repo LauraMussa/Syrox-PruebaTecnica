@@ -26,6 +26,8 @@ GET http://localhost:3001/sales
 Content-Type: application/json
 
 
+
+
 ### Obtener una sola venta
 GET http://localhost:3001/sales/c9c71ed0-6910-44f2-a5cf-08e2b4ee6f8d
 Content-Type: application/json

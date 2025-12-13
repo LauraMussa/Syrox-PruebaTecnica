@@ -20,15 +20,19 @@ Content-Type: application/json
 ###Obtiene categorias padre para filtro
 GET http://localhost:3001/categories/tree
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmZWU0MDJhZS05YTAzLTQ4MmItODFhMi1iM2JiMmY3ZGUzZDYiLCJlbWFpbCI6ImxhdXJhbXVzc2E5NEBnbWFpbC5jb20iLCJpYXQiOjE3NjU1MTczNzIsImV4cCI6MTc2NTYwMzc3Mn0.WXsiqOwytldCa4bE2HNgPjEq4ODsEVFq6o9xmBmfr48
 
 ###Obtiene categorias
 GET http://localhost:3001/categories
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmZWU0MDJhZS05YTAzLTQ4MmItODFhMi1iM2JiMmY3ZGUzZDYiLCJlbWFpbCI6ImxhdXJhbXVzc2E5NEBnbWFpbC5jb20iLCJpYXQiOjE3NjU1MTczNzIsImV4cCI6MTc2NTYwMzc3Mn0.WXsiqOwytldCa4bE2HNgPjEq4ODsEVFq6o9xmBmfr48
 
 
 ###Obtiene categorias Padre
 GET http://localhost:3001/categories/parent
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmZWU0MDJhZS05YTAzLTQ4MmItODFhMi1iM2JiMmY3ZGUzZDYiLCJlbWFpbCI6ImxhdXJhbXVzc2E5NEBnbWFpbC5jb20iLCJpYXQiOjE3NjU1MTczNzIsImV4cCI6MTc2NTYwMzc3Mn0.WXsiqOwytldCa4bE2HNgPjEq4ODsEVFq6o9xmBmfr48
+
 
 
 ###Obtiene una categoria
