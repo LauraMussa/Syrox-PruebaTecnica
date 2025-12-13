@@ -29,14 +29,15 @@ enum PaymentStatus {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
+  id        String     @id @default(uuid())
+  email     String     @unique
   password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
   name      String
   address   String?
   phone     String?
+  auditLogs AuditLog[]
 
   @@map("users")
 }
@@ -134,4 +135,16 @@ model SaleHistory {
   createdAt DateTime    @default(now())
 
   @@map("sale_history")
+}
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  action      String // Ej: "CREAR_PRODUCTO", "ACTUALIZAR_VENTA"
+  description String // Ej: "Se creó el producto Nike Air Force"
+  userId      String // El ID del usuario que hizo la acción
+  user        User     @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+
+  // Opcional: Si quieres guardar metadatos extra (ej: el precio anterior y el nuevo)
+  metadata Json?
 }

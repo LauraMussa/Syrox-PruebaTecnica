@@ -12,6 +12,8 @@ import { CustomersModule } from './customers/customers.module';
 import { DashboardService } from './dashboard/dashboard.service';
 import { DashboardController } from './dashboard/dashboard.controller';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { HistoryController } from './history/history.controller';
+import { HistoryModule } from './history/history.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -24,8 +26,9 @@ import { DashboardModule } from './dashboard/dashboard.module';
     AuthModule,
     CustomersModule,
     DashboardModule,
+    HistoryModule,
   ],
-  controllers: [AppController, DashboardController],
+  controllers: [AppController, DashboardController, HistoryController],
   providers: [AppService, PrismaService, DashboardService],
 })
 export class AppModule {}

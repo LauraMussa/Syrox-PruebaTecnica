@@ -6,6 +6,8 @@ import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const expressApp = app.getHttpAdapter().getInstance();
+  expressApp.set('trust proxy', 1);
   const config = new DocumentBuilder()
     .setTitle('SyroxTech API')
     .setDescription('Documentación de la API para el e-commerce SyroxTech')
@@ -24,10 +26,7 @@ async function bootstrap() {
   );
   app.use(cookieParser());
   app.enableCors({
-    origin: [
-      'http://localhost:3000',
-      'https://https://syroxtech-front.vercel.app',
-    ],
+    origin: ['http://localhost:3000', 'https://syroxtech-front.vercel.app'],
     credentials: true,
   });
   await app.listen(process.env.PORT ?? 3001);

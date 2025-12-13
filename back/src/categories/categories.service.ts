@@ -70,7 +70,7 @@ export class CategoriesService {
         parent: true,
         children: true,
       },
-      orderBy: { position: 'desc' },
+      orderBy: { position: 'asc' },
     });
     const lastPage = Math.ceil(totalCategories / limit);
 
@@ -90,14 +90,14 @@ export class CategoriesService {
       include: {
         children: true,
       },
-      orderBy: { position: 'desc' },
+      orderBy: { position: 'asc' },
     });
   }
 
   async findAllParent() {
     return this.prisma.category.findMany({
       where: { parentId: null },
-      orderBy: { position: 'desc' },
+      orderBy: { position: 'asc' },
     });
   }
 
@@ -115,7 +115,7 @@ export class CategoriesService {
       // última posición del nuevo padre
       const lastItem = await this.prisma.category.findFirst({
         where: { parentId: dto.parentId },
-        orderBy: { position: 'desc' },
+        orderBy: { position: 'asc' },
       });
 
       dto.position = lastItem ? lastItem.position + 1 : 1;
