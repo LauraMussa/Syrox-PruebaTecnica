@@ -21,16 +21,14 @@ export default function AnalyticsPage() {
 
   const [isExporting, setIsExporting] = useState(false);
   useEffect(() => {
-    // Cargar ventas si no están cargadas
     if (sales.length === 0) {
-      dispatch(fetchSales()); // Ajusta parámetros si es necesario
+      dispatch(fetchSales()); 
     }
   }, [dispatch, sales.length]);
 
-  // Usamos useMemo para no recalcular en cada render
   const analyticsData = useMemo(() => calculateAnalytics(sales), [sales]);
   const handleExport = async () => {
-    // Validamos que haya datos
+  
     if (!analyticsData || sales.length === 0) {
       toast.warning("No hay datos para exportar.");
       return;

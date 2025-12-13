@@ -1,5 +1,5 @@
 "use client";
-import { Home, Package, ShoppingCart, BarChart3, Users, LogOut, Menu, Power } from "lucide-react";
+import { Home, Package, ShoppingCart, BarChart3, Users, History, Menu, Power } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -27,8 +27,8 @@ const items = [
   { title: "Categorías", icon: Menu, url: "/categories" },
   { title: "Clientes", icon: Users, url: "/customers" },
   { title: "Analíticas", icon: BarChart3, url: "/analytics" },
+  { title: "Historial", icon: History, url: "/history" },
 ];
-
 export function AppSidebar() {
   const pathname = usePathname();
   const dispatch = useAppDispatch();
@@ -63,7 +63,7 @@ export function AppSidebar() {
                   <SidebarMenuButton asChild tooltip={item.title} isActive={pathname === item.url}>
                     <Link href={item.url} className="cursor-pointer dark:hover:bg-accent">
                       <item.icon />
-                      
+
                       {state === "expanded" && <span>{item.title}</span>}
                     </Link>
                   </SidebarMenuButton>

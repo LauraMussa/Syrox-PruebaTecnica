@@ -8,8 +8,22 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import { DynamicBreadcrumb } from "@/components/DynamicBreadcrumb";
 import { HistoryDropdown } from "@/components/HistoryDropdown";
+import { useAppSelector } from "@/store/hooks";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const user = useAppSelector((state) => state.auth.user);
+
+  const getInitials = (name: string | undefined | null) => {
+    if (!name) return "U";
+
+    return name
+      .trim()
+      .split(" ")
+      .map((word) => word[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -22,11 +36,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </div>
 
           <div className="flex items-center gap-4">
-             <HistoryDropdown />
+            <HistoryDropdown />
             <ThemeToggle />
             <Avatar className="h-8 w-8 cursor-pointer hover:border hover:border-foreground/50 ">
               <AvatarImage src="" />
-              <AvatarFallback>AD</AvatarFallback>
+              <AvatarFallback>{getInitials(user?.name)}</AvatarFallback>
             </Avatar>
           </div>
         </header>

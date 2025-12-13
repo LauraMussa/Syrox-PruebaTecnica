@@ -12,25 +12,21 @@ interface Props {
   };
 }
 
-// PALETA DE COLORES "PRO" (Funciona en Dark y Light)
-// Evitamos rojos/verdes puros. Usamos una gama fría y elegante.
 const COLORS = [
-  "#6496e5", // Blue 500 (Principal)
-  "#8b5cf6", // Violet 500
-  "#06b6d4", // Cyan 500
-  "#10b981", // Emerald 500 (Para contraste suave)
-  "#f43f5e", // Rose 500 (Solo un toque cálido)
-  "#f59e0b", // Amber 500
-  "#6366f1", // Indigo 500
+  "#6496e5", 
+  "#8b5cf6", 
+  "#06b6d4", 
+  "#10b981", 
+  "#f43f5e", 
+  "#f59e0b", 
+  "#6366f1", 
 ];
 
-// Tooltip personalizado (reutilizamos el estilo del otro gráfico)
 const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-popover border border-border p-3 rounded-xl shadow-lg outline-none z-50">
         <div className="flex items-center gap-2 mb-1">
-          {/* Circulito del color correspondiente */}
           <div 
             className="w-2 h-2 rounded-full" 
             style={{ backgroundColor: payload[0].payload.fill }}

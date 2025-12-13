@@ -156,7 +156,7 @@ export function AuthForm({ type, onSubmit }: AuthFormProps) {
                 />
               )}
               {globalError !== "" && (
-                <span className="flex items-center gap-2 border border-red-500 bg-red-100 py-1 w-fit px-3 text-red-700 text-center m-auto rounded-md">
+                <span className="flex items-center gap-2 border border-destructive bg-destructive/50 py-1 w-fit px-3 dark:text-destructive-foreground/80 text-foreground/80 text-center m-auto rounded-md">
                   <p>{globalError}</p>
                   <CircleAlert />
                 </span>

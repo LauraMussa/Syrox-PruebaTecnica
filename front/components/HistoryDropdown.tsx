@@ -111,7 +111,7 @@ export function HistoryDropdown() {
         </ScrollArea>
 
         <div className="p-2 border-t bg-muted/20">
-          <Link href="/admin/history" onClick={() => setOpen(false)}>
+          <Link href="/history" onClick={() => setOpen(false)}>
             <Button variant="ghost" className="w-full justify-center text-xs h-8">
               Ver historial completo
               <ArrowRight className="ml-2 h-3 w-3" />

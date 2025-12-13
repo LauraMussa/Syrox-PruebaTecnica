@@ -11,7 +11,7 @@ import { Product } from "@/types/product.types";
 
 // Actions
 import { addProduct, updateProduct } from "@/store/products/productsSlice";
-import { fetchParentCategories } from "@/store/categories/categoriesSlice";
+import { fetchCategoryTree, fetchParentCategories } from "@/store/categories/categoriesSlice";
 
 // Hooks
 import { useProductHandlers } from "@/hooks/useProductHandlers";
@@ -32,7 +32,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { ParentCategory } from "@/types/category.types";
+import { Category, ParentCategory } from "@/types/category.types";
 import { fetchHistory } from "@/store/history/historySlice";
 
 interface ProductFormModalProps {
@@ -51,7 +51,7 @@ export function ProductFormModal({
   const setOpen = onOpenChange ?? setInternalOpen;
 
   const dispatch = useAppDispatch();
-  const { parentCategories } = useAppSelector((state: any) => state.categories);
+  const { parentCategories, tree } = useAppSelector((state: any) => state.categories);
 
   const isEditing = !!productToEdit;
 
@@ -95,10 +95,10 @@ export function ProductFormModal({
   } = useProductHandlers(setValue, watch);
 
   useEffect(() => {
-    if ((!parentCategories || parentCategories.length === 0) && isOpen) {
-      dispatch(fetchParentCategories());
+    if ((!tree || tree.length === 0) && isOpen) {
+      dispatch(fetchCategoryTree());
     }
-  }, [dispatch, parentCategories?.length, isOpen]);
+  }, [dispatch, tree?.length, isOpen]);
 
   useEffect(() => {
     if (isOpen) {
@@ -220,11 +220,19 @@ export function ProductFormModal({
                   <SelectValue placeholder="Seleccionar..." />
                 </SelectTrigger>
                 <SelectContent>
-                  {parentCategories?.map((p: ParentCategory) => (
-                    <SelectItem key={p.id} value={p.id}>
-                      {p.name}
-                    </SelectItem>
-                  ))}
+                  {tree?.map((parent: Category) =>
+                    parent.children && parent.children.length > 0 ? (
+                      parent.children.map((child: Category) => (
+                        <SelectItem key={child.id} value={child.id} className="cursor-pointer">
+                          {parent.name} - {child.name}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <SelectItem key={parent.id} value={parent.id} className="cursor-pointer">
+                        {parent.name}
+                      </SelectItem>
+                    )
+                  )}
                 </SelectContent>
               </Select>
               {errors.categoryId && <p className="text-xs text-destructive">{errors.categoryId.message}</p>}
@@ -241,10 +249,18 @@ export function ProductFormModal({
                   <SelectValue placeholder="Seleccionar..." />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Hombre">Hombre</SelectItem>
-                  <SelectItem value="Mujer">Mujer</SelectItem>
-                  <SelectItem value="Niños">Niños</SelectItem>
-                  <SelectItem value="Unisex">Unisex</SelectItem>
+                  <SelectItem className="cursor-pointer" value="Hombre">
+                    Hombre
+                  </SelectItem>
+                  <SelectItem className="cursor-pointer" value="Mujer">
+                    Mujer
+                  </SelectItem>
+                  <SelectItem className="cursor-pointer" value="Niños">
+                    Niños
+                  </SelectItem>
+                  <SelectItem className="cursor-pointer" value="Unisex">
+                    Unisex
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
