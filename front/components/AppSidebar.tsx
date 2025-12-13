@@ -1,5 +1,5 @@
 "use client";
-import { Home, Package, ShoppingCart, BarChart3, Users, LogOut, Menu } from "lucide-react";
+import { Home, Package, ShoppingCart, BarChart3, Users, LogOut, Menu, Power } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -15,7 +15,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { logout, performLogout } from "@/store/auth/authSlice";
 import { useAppDispatch } from "@/store/hooks";
@@ -34,11 +34,10 @@ export function AppSidebar() {
   const dispatch = useAppDispatch();
   const { state } = useSidebar();
 
-  const router = useRouter();
-  
-  const handleLogout = () => {
-    dispatch(performLogout());
-    router.push("/login");
+  const handleLogout = async () => {
+    await dispatch(performLogout()).unwrap();
+
+    window.location.href = "/login";
   };
 
   return (
@@ -47,13 +46,7 @@ export function AppSidebar() {
         {state === "expanded" ? (
           <>
             <span className="font-bold hidden md:text-lg truncate">Tennis Star</span>
-            <Image
-              src={"/logo.svg"}
-              width={90}
-              height={90}
-              alt="logo"
-              className="object-contain" // Buena práctica para evitar deformaciones
-            />
+            <Image src={"/logo.svg"} width={90} height={90} alt="logo" className="object-contain" />
           </>
         ) : (
           <Image src={"/logoSmall.svg"} width={40} height={40} alt="logo small" className="object-contain" />
@@ -68,9 +61,10 @@ export function AppSidebar() {
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild tooltip={item.title} isActive={pathname === item.url}>
-                    <Link href={item.url} className="cursor-pointer  dark:hover:bg-accent">
+                    <Link href={item.url} className="cursor-pointer dark:hover:bg-accent">
                       <item.icon />
-                      <span>{item.title}</span>
+                      
+                      {state === "expanded" && <span>{item.title}</span>}
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -85,8 +79,14 @@ export function AppSidebar() {
           onClick={() => handleLogout()}
           className="flex items-center gap-2 text-sm text-muted-foreground cursor-pointer hover:text-foreground"
         >
-          <LogOut size={16} />
-          <span>Cerrar Sesión</span>
+          {state === "expanded" ? (
+            <>
+              <Power size={16} />
+              <span>Cerrar Sesión</span>
+            </>
+          ) : (
+            <Power size={16} />
+          )}
         </button>
       </SidebarFooter>
       <SidebarRail />

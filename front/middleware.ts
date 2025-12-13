@@ -1,13 +1,33 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
+
+  if (path.startsWith("/api/")) {
+    const backendPath = path.replace(/^\/api/, "");
+    const backendUrl = process.env.BACKEND_URL || "https://medical-octopus-lauramussa-f33629ba.koyeb.app";
+    const targetUrl = `${backendUrl}${backendPath}${request.nextUrl.search}`;
+
+
+    try {
+      const backendResponse = await fetch(targetUrl, {
+        method: request.method,
+        headers: request.headers,
+        body: request.body,
+        // @ts-ignore
+        duplex: 'half', 
+      });
+      return backendResponse;
+    } catch (error) {
+      return NextResponse.json({ error: "Backend Connection Failed" }, { status: 502 });
+    }
+  }
 
   const token = request.cookies.get("access_token")?.value;
 
+  // Redirige si ya está logueado e intenta ir a login/register
   const authRoutes = ["/login", "/register"];
-
   if (authRoutes.includes(path)) {
     if (token) {
       return NextResponse.redirect(new URL("/", request.url));
@@ -15,19 +35,21 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const protectedPrefixes = ["/analytics", "/categories", "/customers", "/products", "/sales", "/"];
+  // Rutas protegidas 
+  const protectedPrefixes = [
+    "/analytics", 
+    "/categories", 
+    "/customers", 
+    "/products", 
+    "/sales"
+  ];
 
-  // Ojo con el '/' en protectedPrefixes, porque coincide con TODO.
-  // Asegúrate de que esa lógica sea la que quieres.
-  // Usualmente se verifica si path === '/' explícitamente o se usa un dashboard prefix.
-  const isProtectedRoute = protectedPrefixes.some((prefix) => {
-    if (prefix === "/") return path === "/"; // Solo coincidir exacto con home
-    return path.startsWith(prefix);
-  });
+  const isProtectedRoute = path === "/" || protectedPrefixes.some((prefix) => path.startsWith(prefix));
 
   if (isProtectedRoute) {
     if (!token) {
-      return NextResponse.redirect(new URL("/login", request.url));
+      const url = new URL("/login", request.url);
+      return NextResponse.redirect(url);
     }
   }
 
@@ -35,5 +57,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|icons|.*\\.svg).*)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|icons|.*\\.svg).*)"],
 };

@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -23,6 +22,7 @@ import { SaleProductsSection } from "./form-sections/SaleProductsSection";
 import { SaleSummarySection } from "./form-sections/SaleSummarySection";
 import { SaleNotesSection } from "./form-sections/SaleNotesSection";
 import { SaleActionsSection } from "./form-sections/SaleActionsSection";
+import { fetchHistory } from "@/store/history/historySlice";
 
 interface SaleFormProps {
   saleId?: string;
@@ -49,14 +49,12 @@ export function SaleForm({ saleId }: SaleFormProps) {
     name: user?.name || "",
   });
 
-  // Effect: Actualizar nombre si carga tarde desde Redux
   useEffect(() => {
     if (user?.name) {
       setCurrentUserDetails((prev) => ({ ...prev, name: user.name || "" }));
     }
   }, [user]);
 
-  // React Hook Form Setup
   const form = useForm<SaleFormValues>({
     resolver: zodResolver(schema) as any,
     defaultValues: {
@@ -69,7 +67,7 @@ export function SaleForm({ saleId }: SaleFormProps) {
     },
   });
 
-  // Effects: Carga Inicial
+  // carga inicial
   useEffect(() => {
     if (isNew) {
       dispatch(resetSelectedSale());
@@ -80,7 +78,7 @@ export function SaleForm({ saleId }: SaleFormProps) {
     }
   }, [saleId, isNew, dispatch]);
 
-  // Effects: Rellenar formulario en Edición
+  // rellena formulario en edicion
   useEffect(() => {
     if (!isNew && selectedSale) {
       form.reset({
@@ -122,6 +120,7 @@ export function SaleForm({ saleId }: SaleFormProps) {
 
             finalCustomerId = newCustomerAction.id;
             toast.success("Cliente registrado correctamente");
+            dispatch(fetchHistory());
           } catch (createError: any) {
             console.error("Fallo al crear cliente:", createError);
             toast.error(`Error creando cliente: ${createError}`);
@@ -146,6 +145,7 @@ export function SaleForm({ saleId }: SaleFormProps) {
         ).unwrap();
 
         toast.success("Venta creada exitosamente");
+        dispatch(fetchHistory());
       } else {
         if (!saleId) return;
 
@@ -159,6 +159,7 @@ export function SaleForm({ saleId }: SaleFormProps) {
         ).unwrap();
 
         toast.success("Venta actualizada exitosamente");
+        dispatch(fetchHistory());
       }
       router.push("/sales");
     } catch (err: any) {

@@ -1,5 +1,4 @@
 import type { NextConfig } from "next";
-
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
@@ -12,6 +11,19 @@ const nextConfig: NextConfig = {
   },
   turbopack: {
     root: __dirname,
+  },
+   async rewrites() {
+    return {
+      
+      beforeFiles: [
+        {
+          source: '/api/:path*',
+          destination: `${process.env.BACKEND_URL}/:path*`, 
+        },
+      ],
+     
+      fallback: []
+    };
   },
 };
 

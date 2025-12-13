@@ -3,12 +3,11 @@
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 import { AppSidebar } from "@/components/AppSidebar";
-import { Button } from "@/components/ui/button";
-import { Bell } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import { DynamicBreadcrumb } from "@/components/DynamicBreadcrumb";
+import { HistoryDropdown } from "@/components/HistoryDropdown";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -23,9 +22,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </div>
 
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" className="cursor-pointer">
-              <Bell className="h-5 w-5 " />
-            </Button>
+             <HistoryDropdown />
             <ThemeToggle />
             <Avatar className="h-8 w-8 cursor-pointer hover:border hover:border-foreground/50 ">
               <AvatarImage src="" />

@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Edit, Trash2, Search, Plus, ChevronLeft, ChevronRight } from "lucide-react"; // Agregados iconos de flechas
+import { Edit, Trash2, Search, Plus, ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 
 // Redux
@@ -28,6 +28,7 @@ import {
 
 import { CategoryFormModal } from "@/components/categories/CategoryFormModal";
 import { CategoryListSkeleton } from "@/components/skeletons/lists/CategoryListSkeleton";
+import { fetchHistory } from "@/store/history/historySlice";
 
 export default function CategoriesListPage() {
   const dispatch = useAppDispatch();
@@ -176,11 +177,17 @@ export default function CategoriesListPage() {
                             <AlertDialogAction
                               className="bg-destructive text-destructive-foreground cursor-pointer hover:bg-destructive/90"
                               onClick={() => {
-                                toast.promise(dispatch(deleteCategory(category.id)).unwrap(), {
-                                  loading: "Eliminando...",
-                                  success: "Categoría eliminada",
-                                  error: (err) => `Error: ${err}`,
-                                });
+                                toast.promise(
+                                  async () => {
+                                    await dispatch(deleteCategory(category.id)).unwrap();
+                                    dispatch(fetchHistory());
+                                  },
+                                  {
+                                    loading: "Eliminando...",
+                                    success: "Categoría eliminada",
+                                    error: (err) => `Error: ${err}`,
+                                  }
+                                );
                               }}
                             >
                               Eliminar

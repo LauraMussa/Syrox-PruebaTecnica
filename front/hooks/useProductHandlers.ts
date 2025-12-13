@@ -8,7 +8,7 @@ type SetValue = UseFormSetValue<ProductFormValues>;
 type Watch = UseFormWatch<ProductFormValues>;
 
 export const useProductHandlers = (setValue: SetValue, watch: Watch) => {
-  // para los inputs temporales
+
   const [tempColor, setTempColor] = useState("");
   const [tempSize, setTempSize] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -35,8 +35,8 @@ export const useProductHandlers = (setValue: SetValue, watch: Watch) => {
     setTempSize("");
   };
 
-  const handleRemoveSize = (index: number) => {
-    const newSizes = currentOptions.talla?.filter((_, i) => i !== index);
+  const handleRemoveSize = (sizeToRemove: string) => {
+    const newSizes = currentOptions.talla?.filter((t) => t !== sizeToRemove);
     setValue("options", { ...currentOptions, talla: newSizes });
   };
 

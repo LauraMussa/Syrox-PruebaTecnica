@@ -7,12 +7,15 @@ import productsReducer from "./products/productsSlice";
 import salesReducer from "./sales/salesSlice";
 import categoriesReducer from "./categories/categoriesSlice";
 import customersReducer from "./customers/customerSlice";
+import historyReducer from "./history/historySlice";
 const rootReducer = combineReducers({
   auth: authReducer,
   products: productsReducer,
   sales: salesReducer,
   categories: categoriesReducer,
   customers: customersReducer,
+
+  history: historyReducer,
 });
 
 const persistConfig = {

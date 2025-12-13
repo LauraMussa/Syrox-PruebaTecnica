@@ -10,11 +10,9 @@ export default function LoginPage() {
 
   const handleLogin = async (data: any) => {
 
-    console.log("🚀 INTENTANDO LOGIN CON DATOS:", data); 
     try {
       const response = await loginService(data as LoginFormType);
       
-      console.log("✅ RESPUESTA BACKEND:", response); // LOG
       dispatch(
         setCredentials({
           user: response.user,

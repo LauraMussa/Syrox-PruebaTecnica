@@ -24,6 +24,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { categorySchema } from "@/schemas/category.schema";
+import { fetchHistory } from "@/store/history/historySlice";
 
 type CategoryFormValues = z.infer<typeof categorySchema>;
 
@@ -67,14 +68,11 @@ export function CategoryFormModal({ open, onOpenChange, categoryToEdit }: Props)
     let nextPos = 1;
 
     if (!selectedParentId || selectedParentId === "root") {
-      // CASO RAIZ: Buscamos en el nivel superior del tree
       if (tree.length > 0) {
-        // Asumiendo que 'tree' son las raíces
         const max = Math.max(...tree.map((c: Category) => c.position || 0));
         nextPos = max + 1;
       }
     } else {
-      // CASO SUB-CATEGORIA: Buscamos al padre dentro del tree
       const parent = tree.find((c: Category) => c.id === selectedParentId);
 
       if (parent && parent.children && parent.children.length > 0) {
@@ -83,7 +81,6 @@ export function CategoryFormModal({ open, onOpenChange, categoryToEdit }: Props)
       }
     }
 
-    // Solo actualizamos si el usuario no ha escrito manualmente (opcional, pero recomendado)
     setValue("position", nextPos);
   }, [selectedParentId, tree, open, categoryToEdit, setValue]);
 
@@ -115,9 +112,11 @@ export function CategoryFormModal({ open, onOpenChange, categoryToEdit }: Props)
       if (isEditing && categoryToEdit) {
         await dispatch(updateCategory({ id: categoryToEdit.id, data: payload })).unwrap();
         toast.success("Categoría actualizada");
+        dispatch(fetchHistory());
       } else {
         await dispatch(addCategory(payload as any)).unwrap();
         toast.success("Categoría creada");
+        dispatch(fetchHistory());
       }
       dispatch(fetchParentCategories());
       dispatch(fetchPagCategories({ page: 1, limit: 10 }));

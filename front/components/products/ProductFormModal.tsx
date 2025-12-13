@@ -33,6 +33,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { ParentCategory } from "@/types/category.types";
+import { fetchHistory } from "@/store/history/historySlice";
 
 interface ProductFormModalProps {
   productToEdit?: Product | null;
@@ -140,9 +141,11 @@ export function ProductFormModal({
       if (isEditing && productToEdit) {
         await dispatch(updateProduct({ id: productToEdit.id, data: payload as any })).unwrap();
         toast.success(`Producto "${payload.name}" actualizado correctamente!`);
+        dispatch(fetchHistory());
       } else {
         await dispatch(addProduct(payload as any)).unwrap();
-        toast.success(`Producto "${payload.name}" creado con éxito!`);
+        toast.success(`"${payload.name}" creado con éxito!`);
+        dispatch(fetchHistory());
       }
       setOpen(false);
       if (!isEditing) reset();
@@ -328,16 +331,19 @@ export function ProductFormModal({
                   <Plus className="w-4 h-4" />
                 </Button>
               </div>
-                {errors.options?.talla?.message && (
+              {errors.options?.talla?.message && (
                 <p className="text-xs text-destructive">{errors.options?.talla?.message}</p>
               )}
               <div className="flex flex-wrap gap-2 mt-2">
-                {currentOptions.talla?.map((t: string | number, i: number) => (
-                  <div key={i} className="bg-muted px-2 py-1 rounded text-xs flex items-center gap-1">
-                    {t}
-                    <X className="w-3 h-3 cursor-pointer" onClick={() => handleRemoveSize(i)} />
-                  </div>
-                ))}
+                {currentOptions.talla &&
+                  [...currentOptions.talla]
+                    .sort((a, b) => Number(a) - Number(b))
+                    .map((t) => (
+                      <div key={t} className="bg-muted px-2 py-1 rounded text-xs flex items-center gap-1">
+                        {t}
+                        <X className="w-3 h-3 cursor-pointer" onClick={() => handleRemoveSize(t as string)} />
+                      </div>
+                    ))}
               </div>
             </div>
           </div>

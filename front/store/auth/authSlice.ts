@@ -18,6 +18,7 @@ export const performLogout = createAsyncThunk("auth/performLogout", async (_, { 
   await logoutService();
 
   dispatch(authSlice.actions.logout());
+  
 });
 
 const initialState: AuthState = {

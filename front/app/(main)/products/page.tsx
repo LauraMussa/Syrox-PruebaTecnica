@@ -45,6 +45,7 @@ import Link from "next/link";
 import { ProductFormModal } from "@/components/products/ProductFormModal";
 import { ProductListSkeleton } from "@/components/skeletons/lists/ProductListSkeleton";
 import { exportProductsToExcel } from "@/lib/exports/products.export";
+import { fetchHistory } from "@/store/history/historySlice";
 
 export default function ProductsListPage() {
   const dispatch = useAppDispatch();
@@ -209,14 +210,14 @@ export default function ProductsListPage() {
                       {product.stock} unidades
                     </div>
                   </TableCell>
-                  {/* Estado (Active) */}
-
-                  {/* Acciones */}
                   <TableCell>
                     <div className="flex items-center gap-2">
                       <Switch
                         checked={product.isActive}
-                        onCheckedChange={() => dispatch(toggleProductStatus(product.id))}
+                        onCheckedChange={async () => {
+                          await dispatch(toggleProductStatus(product.id));
+                          dispatch(fetchHistory());
+                        }}
                         className="cursor-pointer dark:data-[state=checked]:bg-green-300/80 data-[state=checked]:bg-green-400 h-5 w-9"
                       />
                       <span
@@ -248,7 +249,6 @@ export default function ProductsListPage() {
                       >
                         <Edit className="h-4 w-4" />
                       </Button>
-                      {/* Diálogo Eliminar */}
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
                           <Button
@@ -278,11 +278,17 @@ export default function ProductsListPage() {
                             <AlertDialogAction
                               className="bg-red-600 text-white hover:bg-red-700 cursor-pointer border-none"
                               onClick={() => {
-                                toast.promise(dispatch(deleteProduct(product.id)).unwrap(), {
-                                  loading: "Eliminando...",
-                                  success: "Producto eliminado",
-                                  error: "Error al eliminar",
-                                });
+                                toast.promise(
+                                  async () => {
+                                    await dispatch(deleteProduct(product.id)).unwrap();
+                                    dispatch(fetchHistory());
+                                  },
+                                  {
+                                    loading: "Eliminando...",
+                                    success: "Producto eliminado",
+                                    error: "Error al eliminar",
+                                  }
+                                );
                               }}
                             >
                               Sí, eliminar

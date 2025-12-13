@@ -19,7 +19,6 @@ export const getIventoryStatsService = async (): Promise<InventoryResponse> => {
       throw new Error(error.message || "Error al obtener estadisticas de producto");
     }
     const data = await response.json();
-    console.log("RESPUESTA DE ESTADISTICAS DE PRODUCTO", data);
 
     return data;
   } catch (error) {
@@ -39,7 +38,6 @@ export const getAllProductsPagService = async (page: number, limit: number): Pro
       throw new Error(error.message || "Error al obtener todos los productos");
     }
     const data = await response.json();
-    console.log("RESPUESTA DE TODOS LOS PRODUCTOS PAGINADOS", data);
 
     return data;
   } catch (error) {
@@ -59,7 +57,6 @@ export const getAllProductsService = async (): Promise<ProductsResponse> => {
       throw new Error(error.message || "Error al obtener todos los productos");
     }
     const data = await response.json();
-    console.log("RESPUESTA DE TODOS LOS PRODUCTOS", data);
 
     return data;
   } catch (error) {
@@ -79,7 +76,6 @@ export const getBestSellersService = async (): Promise<BestSellerProduct[]> => {
       throw new Error(error.message || "Error al obtener productos mas vendidos");
     }
     const data = await response.json();
-    console.log("RESPUESTA DE PRODUCTOS MAS VENDIDOS", data);
 
     return data;
   } catch (error) {
