@@ -1,13 +1,9 @@
 import * as XLSX from "xlsx";
-// 1. IMPORTAMOS LA FUNCIÓN REAL DESDE TU ARCHIVO
 import { calculateAnalytics } from "@/helpers/analytics";
 import { Customer } from "@/types/customer.types";
 
-// 2. EXTRAEMOS EL TIPO AUTOMÁTICAMENTE
-// Esto le dice a TS: "El tipo AnalyticsData es igual a lo que devuelve la función calculateAnalytics"
 type AnalyticsData = ReturnType<typeof calculateAnalytics>;
 
-// --- Exportación de Clientes ---
 export function exportCustomersToExcel(
   customers: Customer[],
   options: { filename?: string; sheetName?: string } = {}
@@ -29,15 +25,13 @@ export function exportCustomersToExcel(
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, sheetName);
 
-  // Ajuste de anchos
   ws["!cols"] = [{ wch: 36 }, { wch: 20 }, { wch: 25 }, { wch: 15 }, { wch: 30 }, { wch: 14 }, { wch: 15 }];
 
   XLSX.writeFile(wb, filename);
 }
 
-// --- Exportación de Analíticas (NUEVA) ---
 export function exportAnalyticsToExcel(
-  analyticsData: AnalyticsData, // <--- Aquí usamos el tipo extraído
+  analyticsData: AnalyticsData, //
   options: { filename?: string } = {}
 ) {
   const {
@@ -46,7 +40,6 @@ export function exportAnalyticsToExcel(
 
   const wb = XLSX.utils.book_new();
 
-  // HOJA 1: Resumen General
   const summaryData = [
     { Métrica: "Ingresos Totales", Valor: analyticsData.totalRevenue },
     { Métrica: "Comisión Admin (15%)", Valor: analyticsData.adminCommission },

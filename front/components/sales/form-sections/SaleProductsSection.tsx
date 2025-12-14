@@ -82,7 +82,6 @@ export function SaleProductsSection({ products }: SaleProductsSectionProps) {
                         </div>
                       </div>
 
-                      {/* Selectores */}
                       <div className="flex-1 w-full flex flex-col xl:flex-row gap-4 items-start xl:items-end">
                         <FormField
                           control={form.control}
@@ -124,8 +123,6 @@ export function SaleProductsSection({ products }: SaleProductsSectionProps) {
                             </FormItem>
                           )}
                         />
-
-                        {/* Selector de Variantes (Talle/Color) */}
                         {selectedProduct?.options && (
                           <div className="w-full xl:flex-1">
                             <OptiontSelector

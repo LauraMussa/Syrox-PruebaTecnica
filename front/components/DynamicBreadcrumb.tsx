@@ -11,7 +11,6 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import React from "react";
-import { OrderStatus } from "../types/sale.types";
 
 const ROUTE_LABELS: Record<string, string> = {
   "/": "Inicio",

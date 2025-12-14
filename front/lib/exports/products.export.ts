@@ -1,5 +1,5 @@
 import * as XLSX from "xlsx";
-import { Product } from "@/types/product.types"; // Ajusta el path de tu tipo
+import { Product } from "@/types/product.types"; 
 
 interface ExportOptions {
   filename?: string;
@@ -16,11 +16,9 @@ export function exportProductsToExcel(
   } = options;
 
   const data = products.map((product) => {
-    // Aplanar opciones (colores y tallas) para que sean legibles
     const colores = product.options?.colores?.join(", ") || product.options?.color?.join(", ") || "-";
     const tallas = product.options?.tallas?.join(", ") || product.options?.talla?.join(", ") || "-";
 
-    // Manejar categoría de forma segura
     const categoria = (product as any).category?.name || "Sin Categoría";
 
     return {
@@ -29,7 +27,7 @@ export function exportProductsToExcel(
       "Descripción": product.description || "-",
       "Marca": product.brand,
       "Categoría": categoria,
-      "Precio ($)": Number(product.price), // Aseguramos que sea número para Excel
+      "Precio ($)": Number(product.price), 
       "Stock": product.stock,
       "Colores Disp.": colores,
       "Tallas Disp.": tallas,

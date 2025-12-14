@@ -6,9 +6,6 @@ interface ExportOptions {
   sheetName?: string;
 }
 
-/**
- * Exporta un array de clientes a Excel
- */
 export function exportCustomersToExcel(
   customers: Customer[],
   options: ExportOptions = {}
@@ -18,7 +15,6 @@ export function exportCustomersToExcel(
     sheetName = "Clientes",
   } = options;
 
-  // Transformar datos para que sean más legibles en Excel
   const data = customers.map((customer) => ({
     ID: customer.id,
     Nombre: customer.name,

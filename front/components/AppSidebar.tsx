@@ -17,7 +17,7 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-import { logout, performLogout } from "@/store/auth/authSlice";
+import {  performLogout } from "@/store/auth/authSlice";
 import { useAppDispatch } from "@/store/hooks";
 
 const items = [

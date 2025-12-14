@@ -63,7 +63,7 @@ export function SaleCustomerSection({ customers, user, currentUserDetails, setCu
         />
         {form.watch("customerId") === "CURRENT_USER" && (
           <div className="grid md:grid-cols-2 gap-4 mt-4 p-4 bg-muted/30 rounded-lg border border-dashed">
-             {/* ... Inputs de dirección y teléfono (copiar del original) ... */}
+             
              <div className="space-y-2">
                 <FormLabel>Dirección de Envío *</FormLabel>
                 <Input

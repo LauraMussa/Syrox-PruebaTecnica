@@ -18,7 +18,6 @@ export function DetailSkeleton() {
             <Skeleton className="h-64 w-full rounded-lg" />
           </div>
 
-          {/* Card Detalles */}
           <div className="border rounded-xl p-6 space-y-6">
             <Skeleton className="h-6 w-24" /> 
             <div className="space-y-2">

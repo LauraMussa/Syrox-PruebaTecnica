@@ -58,7 +58,7 @@ export function AuthForm({ type, onSubmit }: AuthFormProps) {
       <Card className="w-full max-w-[500px] py-12 px-8 shadow-lg">
         <CardHeader className="space-y-1 text-center">
           <div className="flex justify-center mb-4">
-            {/* Tu Logo aquí */}
+         
             <Image width={150} height={150} alt="logo" src="/logo.svg" />
           </div>
           <CardTitle className="text-3xl font-bold">

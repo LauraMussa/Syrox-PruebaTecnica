@@ -73,7 +73,7 @@ export const deleteCategory = createAsyncThunk(
   async (id: string, { rejectWithValue }) => {
     try {
       await deleteCategoryService(id);
-      return id; // Retornamos el ID para filtrar localmente
+      return id; 
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -150,6 +150,7 @@ const categorySlice = createSlice({
     builder.addCase(fetchCategoryTree.fulfilled, (state, action) => {
       state.tree = action.payload;
     });
+    
     ///UPDATE
     builder.addCase(updateCategory.fulfilled, (state, action) => {
       const updated = action.payload;

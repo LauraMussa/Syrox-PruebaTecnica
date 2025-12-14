@@ -1,13 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useParams } from "next/navigation";
 import { ArrowLeft, User, MapPin, CreditCard, Package } from "lucide-react";
 import Link from "next/link";
 
 // Tipos y Servicios
-import { Sale, SaleItem } from "@/types/sale.types";
-import { getSaleByIdService } from "@/services/sales.service";
+import { SaleItem } from "@/types/sale.types";
 
 // Componentes UI
 import { Button } from "@/components/ui/button";
@@ -19,7 +18,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { SaleDetailSkeleton } from "@/components/skeletons/details/SaleDetailSkeleton";
 import { fetchSaleById } from "@/store/sales/salesSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-// Helpers (Reutiliza los mismos de la lista)
+
 const getStatusColor = (status: string) => {
   switch (status) {
     case "DELIVERED":
@@ -60,6 +59,7 @@ export default function SaleDetailPage() {
 
   const { selectedSale, loadingSelected } = useAppSelector((state: any) => state.sales);
   const dispatch = useAppDispatch();
+
   useEffect(() => {
     if (id) {
       dispatch(fetchSaleById(id as string));
@@ -67,6 +67,7 @@ export default function SaleDetailPage() {
   }, [id, dispatch]);
 
   if (loadingSelected) return <SaleDetailSkeleton />;
+
   if (!selectedSale) {
     return (
       <div className="flex flex-col items-center justify-center h-[50vh]">
@@ -77,9 +78,10 @@ export default function SaleDetailPage() {
       </div>
     );
   }
+
   return (
-    <div className="p-6 space-y-6 max-w-6xl mx-auto bg-background min-h-screen animate-in fade-in">
-      {/* HEADER */}
+    <div className="p-6 space-y-6 w-full max-w-[1600px] mx-auto bg-background min-h-screen animate-in fade-in">
+      {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div className="space-y-1">
           <div className="flex items-center gap-3">
@@ -97,15 +99,13 @@ export default function SaleDetailPage() {
         </div>
 
         <div className="flex gap-2 ml-8 md:ml-0">
-          {/* Aquí podrías poner botones de acción como "Imprimir", "Cancelar Pedido", etc. */}
-          <Button variant="outline" onClick={() => window.print()}>
+          <Button className="cursor-pointer" variant="outline" onClick={() => window.print()}>
             Imprimir Comprobante
           </Button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* COLUMNA PRINCIPAL: ITEMS */}
         <div className="lg:col-span-2 space-y-6">
           <Card>
             <CardHeader>
@@ -162,9 +162,8 @@ export default function SaleDetailPage() {
           </Card>
         </div>
 
-        {/* COLUMNA LATERAL: CLIENTE Y PAGO */}
+        {/* Columna Derecha*/}
         <div className="space-y-6">
-          {/* Cliente Card */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-base">
@@ -194,7 +193,7 @@ export default function SaleDetailPage() {
             </CardContent>
           </Card>
 
-          {/* Pago Card */}
+          {/* Pago */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-base">
